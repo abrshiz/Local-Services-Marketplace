@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace = "com.example.localservicemarketplace"
-    compileSdk = 36
+    compileSdk = 32
 
     defaultConfig {
         applicationId = "com.example.localservicemarketplace"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 32
         versionCode = 1
         versionName = "1.0"
 

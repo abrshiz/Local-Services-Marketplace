@@ -1,27 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="@color/gray_50">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Profile"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp"/>
+        <!-- Header with Cover Photo -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
 
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_cover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/cover_placeholder"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.None" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/civ_avatar"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="-50dp"
+                android:src="@drawable/ic_avatar_default"
+                android:borderColor="@color/white"
+                android:borderWidth="4dp" />
+        </FrameLayout>
+
+        <!-- Profile Info -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="John Doe"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/gray_900" />
+
+            <TextView
+                android:id="@+id/tv_role"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Customer"
+                android:textSize="14sp"
+                android:textColor="@color/primary"
+                android:layout_marginTop="4dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_star"
+                    android:tint="@color/warning" />
+
+                <TextView
+                    android:id="@+id/tv_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4.8 ★"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="4dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Stats Section for Providers -->
+        <LinearLayout
+            android:id="@+id/statsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:visibility="gone">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                app:cardCornerRadius="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tv_stats_services"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Services"
+                        android:textSize="12sp"
+                        android:textColor="@color/gray_600" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                app:cardCornerRadius="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tv_stats_bookings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="45"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/success" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bookings"
+                        android:textSize="12sp"
+                        android:textColor="@color/gray_600" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                app:cardCornerRadius="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tv_stats_reviews"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="38"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/accent" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Reviews"
+                        android:textSize="12sp"
+                        android:textColor="@color/gray_600" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <!-- Contact Info Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardElevation="4dp">
+            android:layout_margin="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -30,58 +206,97 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:id="@+id/tv_name"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
+                    android:text="Contact Information"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/gray_900"
+                    android:layout_marginBottom="12dp" />
 
-                <TextView
-                    android:id="@+id/tv_email"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"/>
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
 
-                <TextView
-                    android:id="@+id/tv_phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"/>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_email"
+                        android:tint="@color/gray_500" />
 
-                <TextView
-                    android:id="@+id/tv_role"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"/>
+                    <TextView
+                        android:id="@+id/tv_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="john.doe@example.com"
+                        android:textSize="14sp"
+                        android:textColor="@color/gray_700" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tv_rating"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:visibility="gone"/>
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_phone"
+                        android:tint="@color/gray_500" />
+
+                    <TextView
+                        android:id="@+id/tv_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="+1 234 567 8900"
+                        android:textSize="14sp"
+                        android:textColor="@color/gray_700" />
+                </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <Button
-            android:id="@+id/btn_edit_profile"
+        <!-- Actions -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Edit Profile"
-            android:layout_marginBottom="8dp"/>
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:paddingTop="0dp">
 
-        <Button
-            android:id="@+id/btn_add_service"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add New Service"
-            android:layout_marginBottom="8dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_edit_profile"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Edit Profile"
+                android:layout_marginBottom="12dp"
+                app:icon="@drawable/ic_edit"
+                app:cornerRadius="24dp" />
 
-        <Button
-            android:id="@+id/btn_logout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Logout"
-            android:backgroundTint="@android:color/holo_red_dark"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add_service"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Add New Service"
+                android:layout_marginBottom="12dp"
+                app:icon="@drawable/ic_add"
+                app:cornerRadius="24dp"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_logout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Logout"
+                app:icon="@drawable/ic_logout"
+                android:backgroundTint="@color/error"
+                app:cornerRadius="24dp" />
+        </LinearLayout>
+
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

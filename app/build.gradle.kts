@@ -35,18 +35,28 @@ android {
 }
 
 dependencies {
-
-    // Core Android libraries (SAFE for API 32)
+    // Core Android libraries
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    // Activity (compatible version)
-    implementation("androidx.activity:activity:1.7.2")
+    // Material Design 3 Components
+    implementation("com.google.android.material:material:1.9.0")
 
-    // Lifecycle (stable for API 32)
+    // CardView and RecyclerView
+    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.0")
+
+    // Activity and Lifecycle
+    implementation("androidx.activity:activity:1.7.2")
     implementation("androidx.lifecycle:lifecycle-runtime:2.6.1")
+
+    // Image Loading
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+
+    // Circular ImageView
+    implementation("de.hdodenhof:circleimageview:3.1.0")
 
     // Testing
     testImplementation("junit:junit:4.13.2")

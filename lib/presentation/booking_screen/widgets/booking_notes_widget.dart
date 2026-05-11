@@ -12,11 +12,8 @@ class BookingNotesWidget extends StatefulWidget {
 }
 
 class _BookingNotesWidgetState extends State<BookingNotesWidget> {
-  // TODO: Replace with Riverpod/Bloc for production
   final _notesController = TextEditingController();
-  final _addressController = TextEditingController(
-    text: '42 Maple Street, Downtown, New York',
-  );
+  final _addressController = TextEditingController();
 
   @override
   void dispose() {

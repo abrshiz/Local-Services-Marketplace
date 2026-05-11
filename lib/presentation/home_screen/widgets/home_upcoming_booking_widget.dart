@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/app_export.dart';
 
 class HomeUpcomingBookingWidget extends StatelessWidget {
-  final Map<String, dynamic> bookingData;
+  final Map<String, dynamic>? bookingData;
   final bool isLoading;
   final VoidCallback onTap;
 
@@ -26,6 +26,11 @@ class HomeUpcomingBookingWidget extends StatelessWidget {
           borderRadius: 16,
         ),
       );
+    }
+
+    final data = bookingData;
+    if (data == null) {
+      return const SizedBox.shrink();
     }
 
     return Padding(
@@ -66,12 +71,12 @@ class HomeUpcomingBookingWidget extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: CustomImageWidget(
-                      imageUrl: bookingData['providerImageUrl'] as String,
+                      imageUrl: data['providerImageUrl'] as String,
                       width: 56,
                       height: 56,
                       fit: BoxFit.cover,
                       semanticLabel:
-                          bookingData['providerSemanticLabel'] as String,
+                          data['providerSemanticLabel'] as String,
                     ),
                   ),
                   const SizedBox(width: 14),
@@ -83,7 +88,7 @@ class HomeUpcomingBookingWidget extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                bookingData['serviceName'] as String,
+                                data['serviceName'] as String,
                                 style: GoogleFonts.plusJakartaSans(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
@@ -116,7 +121,7 @@ class HomeUpcomingBookingWidget extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          bookingData['providerName'] as String,
+                          data['providerName'] as String,
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,

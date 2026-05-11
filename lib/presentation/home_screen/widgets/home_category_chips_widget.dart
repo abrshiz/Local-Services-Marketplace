@@ -34,7 +34,9 @@ class HomeCategoryChipsWidget extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  // TODO: Navigate to all categories screen
+                },
                 child: Text(
                   'See all',
                   style: GoogleFonts.plusJakartaSans(

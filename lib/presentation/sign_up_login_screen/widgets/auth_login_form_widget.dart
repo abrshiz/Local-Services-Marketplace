@@ -18,12 +18,9 @@ class AuthLoginFormWidget extends StatefulWidget {
 }
 
 class _AuthLoginFormWidgetState extends State<AuthLoginFormWidget> {
-  // TODO: Replace with Riverpod/Bloc for production
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController(
-    text: 'alex.carter@localservice.app',
-  );
-  final _passwordController = TextEditingController(text: 'Service@2026');
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _obscurePassword = true;
   bool _rememberMe = true;
 

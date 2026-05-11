@@ -1,4 +1,3 @@
-
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
 import './widgets/home_category_chips_widget.dart';
@@ -23,113 +22,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late AnimationController _entranceController;
   late Animation<double> _fadeAnimation;
 
-  final List<Map<String, dynamic>> _categories = [
-    {'icon': 'cleaning', 'label': 'Cleaning', 'color': 0xFF1565C0},
-    {'icon': 'plumbing', 'label': 'Plumbing', 'color': 0xFF00695C},
-    {'icon': 'electrical', 'label': 'Electrical', 'color': 0xFFE65100},
-    {'icon': 'carpenter', 'label': 'Carpentry', 'color': 0xFF6A1B9A},
-    {'icon': 'paint', 'label': 'Painting', 'color': 0xFF283593},
-    {'icon': 'garden', 'label': 'Gardening', 'color': 0xFF2E7D32},
-    {'icon': 'ac', 'label': 'AC Repair', 'color': 0xFF0277BD},
-    {'icon': 'moving', 'label': 'Moving', 'color': 0xFF4E342E},
-  ];
-
-  final List<Map<String, dynamic>> _servicesMaps = [
-    {
-      'serviceId': 'svc_001',
-      'title': 'Deep Home Cleaning',
-      'category': 'Cleaning',
-      'providerName': 'Maria Santos',
-      'providerImageUrl':
-          'https://img.rocket.new/generatedImages/rocket_gen_img_115651084-1764892528190.png',
-      'providerSemanticLabel':
-          'Professional female cleaner with brown hair smiling in uniform',
-      'serviceImageUrl':
-          'https://img.rocket.new/generatedImages/rocket_gen_img_17622e44b-1772187349186.png',
-      'serviceSemanticLabel':
-          'Bright clean living room with organized furniture and spotless floors',
-      'rating': 4.8,
-      'reviewCount': 124,
-      'priceType': 'HOURLY',
-      'basePrice': 45.0,
-      'isVerified': true,
-      'distance': '1.2 km',
-    },
-    {
-      'serviceId': 'svc_002',
-      'title': 'Pipe Repair & Installation',
-      'category': 'Plumbing',
-      'providerName': 'James Okonkwo',
-      'providerImageUrl':
-          'https://images.unsplash.com/photo-1659353591742-9fa64d94738e',
-      'providerSemanticLabel':
-          'Middle-aged African man in blue work uniform holding wrench',
-      'serviceImageUrl':
-          'https://img.rocket.new/generatedImages/rocket_gen_img_1a07a9909-1772083415193.png',
-      'serviceSemanticLabel':
-          'Plumber working under sink with copper pipes visible',
-      'rating': 4.6,
-      'reviewCount': 89,
-      'priceType': 'FIXED',
-      'basePrice': 120.0,
-      'isVerified': true,
-      'distance': '0.8 km',
-    },
-    {
-      'serviceId': 'svc_003',
-      'title': 'Electrical Wiring & Repair',
-      'category': 'Electrical',
-      'providerName': 'Priya Nair',
-      'providerImageUrl':
-          'https://img.rocket.new/generatedImages/rocket_gen_img_125538482-1766485545000.png',
-      'providerSemanticLabel':
-          'Young Indian woman electrician in safety gear with tools',
-      'serviceImageUrl':
-          'https://images.unsplash.com/photo-1628424123281-aafc8d41c5e4',
-      'serviceSemanticLabel':
-          'Close-up of electrical panel with colorful wires being connected',
-      'rating': 4.9,
-      'reviewCount': 203,
-      'priceType': 'HOURLY',
-      'basePrice': 65.0,
-      'isVerified': true,
-      'distance': '2.4 km',
-    },
-    {
-      'serviceId': 'svc_004',
-      'title': 'Interior Painting',
-      'category': 'Painting',
-      'providerName': 'Carlos Mendez',
-      'providerImageUrl':
-          'https://img.rocket.new/generatedImages/rocket_gen_img_171981ffb-1772650906231.png',
-      'providerSemanticLabel':
-          'Hispanic man in paint-stained overalls holding roller brush',
-      'serviceImageUrl':
-          'https://img.rocket.new/generatedImages/rocket_gen_img_1ad324803-1774019383560.png',
-      'serviceSemanticLabel':
-          'Freshly painted white room interior with roller and paint tray on floor',
-      'rating': 4.7,
-      'reviewCount': 67,
-      'priceType': 'FIXED',
-      'basePrice': 200.0,
-      'isVerified': false,
-      'distance': '3.1 km',
-    },
-  ];
-
-  final Map<String, dynamic> _upcomingBookingMap = {
-    'bookingId': 'bkg_2847',
-    'serviceName': 'Deep Home Cleaning',
-    'providerName': 'Maria Santos',
-    'providerImageUrl':
-        'https://img.rocket.new/generatedImages/rocket_gen_img_115651084-1764892528190.png',
-    'providerSemanticLabel':
-        'Professional female cleaner with brown hair smiling in uniform',
-    'scheduledTime': '2026-05-12T10:00:00',
-    'status': 'confirmed',
-    'address': '42 Maple Street, Downtown',
-    'totalPrice': 135.0,
-  };
+  // Data will be populated from backend/API
+  final List<Map<String, dynamic>> _categories = [];
+  final List<Map<String, dynamic>> _servicesMaps = [];
+  final Map<String, dynamic>? _upcomingBookingMap = null;
 
   @override
   void initState() {
@@ -195,7 +91,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 16),
-                HomeSearchBarWidget(onSearchTap: () {}, onFilterTap: () {}),
+                HomeSearchBarWidget(
+                  onSearchTap: () {
+                    // TODO: Navigate to search screen
+                  },
+                  onFilterTap: () {
+                    // TODO: Navigate to filters screen
+                  },
+                ),
                 const SizedBox(height: 20),
                 HomeCategoryChipsWidget(
                   categories: _categories,
@@ -359,7 +262,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
       actions: [
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            // TODO: Navigate to notifications screen
+          },
           icon: Stack(
             children: [
               Icon(
@@ -385,8 +290,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         Padding(
           padding: const EdgeInsets.only(right: 16),
           child: GestureDetector(
-            onTap: () =>
-                Navigator.pushNamed(context, AppRoutes.signUpLoginScreen),
+            onTap: () {
+              // Logout: navigate back to login
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                AppRoutes.signUpLoginScreen,
+                (route) => false,
+              );
+            },
             child: CircleAvatar(
               radius: 17,
               backgroundColor: AppTheme.primaryContainer,

@@ -30,119 +30,32 @@ class _BookingScreenState extends State<BookingScreen>
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
 
-  // Mock service data passed via arguments or default
-  final Map<String, dynamic> _serviceMap = {
-    'serviceId': 'svc_001',
-    'title': 'Deep Home Cleaning',
-    'category': 'Cleaning',
-    'providerName': 'Maria Santos',
-    'providerImageUrl':
-        'https://img.rocket.new/generatedImages/rocket_gen_img_115651084-1764892528190.png',
-    'providerSemanticLabel':
-        'Professional female cleaner with brown hair smiling in uniform',
-    'serviceImageUrl':
-        'https://img.rocket.new/generatedImages/rocket_gen_img_17622e44b-1772187349186.png',
-    'serviceSemanticLabel':
-        'Bright clean living room with organized furniture and spotless floors',
-    'rating': 4.8,
-    'reviewCount': 124,
-    'priceType': 'HOURLY',
-    'basePrice': 45.0,
-    'isVerified': true,
-    'distance': '1.2 km',
-    'bio':
-        'Professional cleaner with 8 years of experience. Specialized in deep cleaning, move-in/move-out cleaning, and office maintenance.',
-    'skills': [
-      'Deep Cleaning',
-      'Office Cleaning',
-      'Move-in/out',
-      'Post-Construction',
-    ],
-  };
+  // Service data will be populated from backend/API or navigation arguments
+  late Map<String, dynamic> _serviceMap;
 
-  final List<Map<String, dynamic>> _timeSlotsMaps = [
-    {
-      'slotId': 'slot_001',
-      'startTime': '08:00 AM',
-      'endTime': '09:00 AM',
-      'period': 'Morning',
-      'isAvailable': true,
-    },
-    {
-      'slotId': 'slot_002',
-      'startTime': '09:00 AM',
-      'endTime': '10:00 AM',
-      'period': 'Morning',
-      'isAvailable': true,
-    },
-    {
-      'slotId': 'slot_003',
-      'startTime': '10:00 AM',
-      'endTime': '11:00 AM',
-      'period': 'Morning',
-      'isAvailable': false,
-    },
-    {
-      'slotId': 'slot_004',
-      'startTime': '11:00 AM',
-      'endTime': '12:00 PM',
-      'period': 'Morning',
-      'isAvailable': true,
-    },
-    {
-      'slotId': 'slot_005',
-      'startTime': '01:00 PM',
-      'endTime': '02:00 PM',
-      'period': 'Afternoon',
-      'isAvailable': true,
-    },
-    {
-      'slotId': 'slot_006',
-      'startTime': '02:00 PM',
-      'endTime': '03:00 PM',
-      'period': 'Afternoon',
-      'isAvailable': true,
-    },
-    {
-      'slotId': 'slot_007',
-      'startTime': '03:00 PM',
-      'endTime': '04:00 PM',
-      'period': 'Afternoon',
-      'isAvailable': false,
-    },
-    {
-      'slotId': 'slot_008',
-      'startTime': '04:00 PM',
-      'endTime': '05:00 PM',
-      'period': 'Afternoon',
-      'isAvailable': true,
-    },
-    {
-      'slotId': 'slot_009',
-      'startTime': '05:00 PM',
-      'endTime': '06:00 PM',
-      'period': 'Evening',
-      'isAvailable': true,
-    },
-    {
-      'slotId': 'slot_010',
-      'startTime': '06:00 PM',
-      'endTime': '07:00 PM',
-      'period': 'Evening',
-      'isAvailable': false,
-    },
-    {
-      'slotId': 'slot_011',
-      'startTime': '07:00 PM',
-      'endTime': '08:00 PM',
-      'period': 'Evening',
-      'isAvailable': true,
-    },
-  ];
+  // Time slots will be populated from backend/API
+  final List<Map<String, dynamic>> _timeSlotsMaps = [];
 
   @override
   void initState() {
     super.initState();
+
+    // Get service data from navigation arguments
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is Map<String, dynamic>) {
+      _serviceMap = args;
+    } else {
+      // Initialize with empty map if no arguments passed
+      _serviceMap = {
+        'title': 'Service',
+        'providerName': 'Provider',
+        'rating': 0.0,
+        'reviewCount': 0,
+        'priceType': 'HOURLY',
+        'basePrice': 0.0,
+      };
+    }
+
     _entranceController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),

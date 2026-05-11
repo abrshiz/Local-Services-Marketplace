@@ -30,7 +30,7 @@ class AuthLogoWidget extends StatelessWidget {
         ),
         const SizedBox(height: 14),
         Text(
-          'LocalService',
+          'Local Service',
           style: GoogleFonts.plusJakartaSans(
             fontSize: 26,
             fontWeight: FontWeight.w800,

@@ -67,7 +67,7 @@ class _AuthLoginFormWidgetState extends State<AuthLoginFormWidget> {
             ),
             decoration: InputDecoration(
               labelText: 'Email Address',
-              hintText: 'you@example.com',
+              hintText: 'user@example.com',
               prefixIcon: Padding(
                 padding: const EdgeInsets.only(left: 14, right: 10),
                 child: CustomIconWidget(
@@ -107,7 +107,6 @@ class _AuthLoginFormWidgetState extends State<AuthLoginFormWidget> {
               prefixIconConstraints: const BoxConstraints(minWidth: 0),
               suffixIcon: IconButton(
                 onPressed: () {
-                  // TODO: Replace with Riverpod/Bloc for production
                   setState(() => _obscurePassword = !_obscurePassword);
                 },
                 icon: CustomIconWidget(
@@ -137,7 +136,6 @@ class _AuthLoginFormWidgetState extends State<AuthLoginFormWidget> {
                     child: Checkbox(
                       value: _rememberMe,
                       onChanged: (val) {
-                        // TODO: Replace with Riverpod/Bloc for production
                         setState(() => _rememberMe = val ?? false);
                       },
                       activeColor: AppTheme.primary,
@@ -234,7 +232,7 @@ class _AuthLoginFormWidgetState extends State<AuthLoginFormWidget> {
           _GoogleSignInButton(
             onTap: () => Navigator.pushNamedAndRemoveUntil(
               context,
-              AppRoutes.homeScreen,
+              AppRoutes.mainContainer,
               (r) => false,
             ),
           ),

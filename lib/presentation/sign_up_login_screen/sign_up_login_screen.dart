@@ -6,6 +6,8 @@ import './widgets/auth_demo_credentials_widget.dart';
 import './widgets/auth_login_form_widget.dart';
 import './widgets/auth_role_selector_widget.dart';
 import './widgets/auth_signup_form_widget.dart';
+import './widgets/auth_logo_widget.dart';
+import './widgets/auth_tab_widget.dart';
 
 class SignUpLoginScreen extends StatefulWidget {
   const SignUpLoginScreen({super.key});
@@ -70,16 +72,37 @@ class _SignUpLoginScreenState extends State<SignUpLoginScreen>
   }
 
   Future<void> _handleSubmit(Map<String, String> formData) async {
-    // TODO: Replace with Riverpod/Bloc for production
+    final email = formData['email'];
+    final password = formData['password'];
+
+    // TODO: Replace with real authentication for production
     setState(() => _isLoading = true);
     await Future.delayed(const Duration(milliseconds: 1500));
+
     if (mounted) {
       setState(() => _isLoading = false);
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        AppRoutes.homeScreen,
-        (route) => false,
-      );
+
+      // Simple demo validation
+      if (email == 'user@example.com' && password == 'password123') {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.mainContainer,
+          (route) => false,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Invalid email or password. Hint: user@example.com / password123',
+              style: GoogleFonts.plusJakartaSans(fontSize: 14),
+            ),
+            backgroundColor: const Color(0xFFE53935),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            margin: const EdgeInsets.all(16),
+          ),
+        );
+      }
     }
   }
 
@@ -160,7 +183,13 @@ class _SignUpLoginScreenState extends State<SignUpLoginScreen>
               padding: const EdgeInsets.all(36),
               child: Column(
                 children: [
-                  _buildLogoSection(theme),
+                  FadeTransition(
+                    opacity: _logoFade,
+                    child: ScaleTransition(
+                      scale: _logoScale,
+                      child: const AuthLogoWidget(),
+                    ),
+                  ),
                   const SizedBox(height: 28),
                   _buildFormSection(theme),
                 ],
@@ -183,58 +212,11 @@ class _SignUpLoginScreenState extends State<SignUpLoginScreen>
           end: Alignment.bottomRight,
         ),
       ),
-      child: _buildLogoSection(theme, isOnDark: true),
-    );
-  }
-
-  Widget _buildLogoSection(ThemeData theme, {bool isOnDark = false}) {
-    return FadeTransition(
-      opacity: _logoFade,
-      child: ScaleTransition(
-        scale: _logoScale,
-        child: Column(
-          children: [
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                color: isOnDark
-                    ? Colors.white.withAlpha(38)
-                    : AppTheme.primaryContainer,
-                borderRadius: BorderRadius.circular(20),
-                border: isOnDark
-                    ? Border.all(color: Colors.white.withAlpha(77), width: 1.5)
-                    : null,
-              ),
-              child: Icon(
-                Icons.home_repair_service_rounded,
-                color: isOnDark ? Colors.white : AppTheme.primary,
-                size: 36,
-              ),
-            ),
-            const SizedBox(height: 14),
-            Text(
-              'LocalService',
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 26,
-                fontWeight: FontWeight.w800,
-                color: isOnDark ? Colors.white : theme.colorScheme.onSurface,
-                letterSpacing: -0.5,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'Your trusted local services marketplace',
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
-                color: isOnDark
-                    ? Colors.white.withAlpha(204)
-                    : theme.colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+      child: FadeTransition(
+        opacity: _logoFade,
+        child: ScaleTransition(
+          scale: _logoScale,
+          child: const AuthLogoWidget(isOnDark: true),
         ),
       ),
     );
@@ -257,12 +239,20 @@ class _SignUpLoginScreenState extends State<SignUpLoginScreen>
               ),
               child: Row(
                 children: [
-                  _buildAuthTab('Sign In', _isLogin, () {
-                    if (!_isLogin) _switchAuthMode();
-                  }),
-                  _buildAuthTab('Create Account', !_isLogin, () {
-                    if (_isLogin) _switchAuthMode();
-                  }),
+                  AuthTabWidget(
+                    label: 'Sign In',
+                    isActive: _isLogin,
+                    onTap: () {
+                      if (!_isLogin) _switchAuthMode();
+                    },
+                  ),
+                  AuthTabWidget(
+                    label: 'Create Account',
+                    isActive: !_isLogin,
+                    onTap: () {
+                      if (_isLogin) _switchAuthMode();
+                    },
+                  ),
                 ],
               ),
             ),
@@ -339,45 +329,10 @@ class _SignUpLoginScreenState extends State<SignUpLoginScreen>
             if (_isLogin)
               AuthDemoCredentialsWidget(
                 onCredentialSelected: (email, password) {
-                  // TODO: Replace with Riverpod/Bloc for production
+                  // TODO: Handle demo credentials selection
                 },
               ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAuthTab(String label, bool isActive, VoidCallback onTap) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOutCubic,
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: isActive ? AppTheme.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: isActive
-                ? [
-                    BoxShadow(
-                      color: AppTheme.primary.withAlpha(64),
-                      blurRadius: 8,
-                      offset: const Offset(0, 3),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: isActive ? Colors.white : AppTheme.textSecondary,
-            ),
-          ),
         ),
       ),
     );

@@ -8,6 +8,7 @@ import './widgets/booking_notes_widget.dart';
 import './widgets/booking_price_summary_widget.dart';
 import './widgets/booking_service_summary_widget.dart';
 import './widgets/booking_time_slots_widget.dart';
+import './widgets/booking_success_sheet_widget.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -19,7 +20,6 @@ class BookingScreen extends StatefulWidget {
 class _BookingScreenState extends State<BookingScreen>
     with SingleTickerProviderStateMixin {
   // TODO: Replace with Riverpod/Bloc for production
-  int _navIndex = 1;
   DateTime _selectedDate = DateTime.now().add(const Duration(days: 1));
   String? _selectedSlotId;
   String _notes = '';
@@ -112,7 +112,7 @@ class _BookingScreenState extends State<BookingScreen>
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _BookingSuccessSheet(
+      builder: (context) => BookingSuccessSheetWidget(
         serviceName: _serviceMap['title'] as String,
         providerName: _serviceMap['providerName'] as String,
         selectedDate: _selectedDate,
@@ -124,7 +124,7 @@ class _BookingScreenState extends State<BookingScreen>
           Navigator.pop(context);
           Navigator.pushNamedAndRemoveUntil(
             context,
-            AppRoutes.homeScreen,
+            AppRoutes.mainContainer,
             (r) => false,
           );
         },
@@ -142,22 +142,6 @@ class _BookingScreenState extends State<BookingScreen>
       body: SafeArea(
         child: isTablet ? _buildTabletLayout(theme) : _buildPhoneLayout(theme),
       ),
-      bottomNavigationBar: isTablet
-          ? null
-          : AppNavigation(
-              currentIndex: _navIndex,
-              onDestinationSelected: (index) {
-                // TODO: Replace with Riverpod/Bloc for production
-                setState(() => _navIndex = index);
-                if (index == 0) {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    AppRoutes.homeScreen,
-                    (r) => false,
-                  );
-                }
-              },
-            ),
     );
   }
 
@@ -231,102 +215,81 @@ class _BookingScreenState extends State<BookingScreen>
   }
 
   Widget _buildTabletLayout(ThemeData theme) {
-    return Row(
+    return Column(
       children: [
-        AppNavigation(
-          currentIndex: _navIndex,
-          onDestinationSelected: (index) {
-            // TODO: Replace with Riverpod/Bloc for production
-            setState(() => _navIndex = index);
-            if (index == 0) {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                AppRoutes.homeScreen,
-                (r) => false,
-              );
-            }
-          },
-        ),
-        Container(width: 1, color: theme.colorScheme.outlineVariant),
+        _buildCustomAppBar(theme),
         Expanded(
-          child: Column(
-            children: [
-              _buildCustomAppBar(theme),
-              Expanded(
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Left: service info + date + slots
-                      Expanded(
-                        flex: 3,
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.all(24),
-                          physics: const BouncingScrollPhysics(),
-                          child: Column(
-                            children: [
-                              BookingServiceSummaryWidget(service: _serviceMap),
-                              const SizedBox(height: 20),
-                              BookingDateStripWidget(
-                                selectedDate: _selectedDate,
-                                onDateSelected: (date) {
-                                  setState(() {
-                                    _selectedDate = date;
-                                    _selectedSlotId = null;
-                                  });
-                                },
-                              ),
-                              const SizedBox(height: 20),
-                              BookingTimeSlotsWidget(
-                                timeSlots: _timeSlotsMaps,
-                                selectedSlotId: _selectedSlotId,
-                                onSlotSelected: (slotId) =>
-                                    setState(() => _selectedSlotId = slotId),
-                              ),
-                            ],
-                          ),
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Left: service info + date + slots
+                Expanded(
+                  flex: 3,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(24),
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        BookingServiceSummaryWidget(service: _serviceMap),
+                        const SizedBox(height: 20),
+                        BookingDateStripWidget(
+                          selectedDate: _selectedDate,
+                          onDateSelected: (date) {
+                            setState(() {
+                              _selectedDate = date;
+                              _selectedSlotId = null;
+                            });
+                          },
                         ),
-                      ),
-                      Container(
-                        width: 1,
-                        color: theme.colorScheme.outlineVariant,
-                      ),
-                      // Right: notes + price + confirm
-                      SizedBox(
-                        width: 340,
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.all(24),
-                          physics: const BouncingScrollPhysics(),
-                          child: Column(
-                            children: [
-                              BookingNotesWidget(
-                                onNotesChanged: (n) =>
-                                    setState(() => _notes = n),
-                              ),
-                              const SizedBox(height: 20),
-                              BookingPriceSummaryWidget(
-                                service: _serviceMap,
-                                selectedPaymentMethod: _selectedPaymentMethod,
-                                onPaymentMethodChanged: (m) =>
-                                    setState(() => _selectedPaymentMethod = m),
-                              ),
-                              const SizedBox(height: 24),
-                              BookingConfirmButtonWidget(
-                                isEnabled: _selectedSlotId != null,
-                                isLoading: _isSubmitting,
-                                onConfirm: _handleConfirmBooking,
-                                totalPrice: _calculateTotal(),
-                              ),
-                            ],
-                          ),
+                        const SizedBox(height: 20),
+                        BookingTimeSlotsWidget(
+                          timeSlots: _timeSlotsMaps,
+                          selectedSlotId: _selectedSlotId,
+                          onSlotSelected: (slotId) =>
+                              setState(() => _selectedSlotId = slotId),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+                Container(
+                  width: 1,
+                  color: theme.colorScheme.outlineVariant,
+                ),
+                // Right: notes + price + confirm
+                SizedBox(
+                  width: 340,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(24),
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        BookingNotesWidget(
+                          onNotesChanged: (n) =>
+                              setState(() => _notes = n),
+                        ),
+                        const SizedBox(height: 20),
+                        BookingPriceSummaryWidget(
+                          service: _serviceMap,
+                          selectedPaymentMethod: _selectedPaymentMethod,
+                          onPaymentMethodChanged: (m) =>
+                              setState(() => _selectedPaymentMethod = m),
+                        ),
+                        const SizedBox(height: 24),
+                        BookingConfirmButtonWidget(
+                          isEnabled: _selectedSlotId != null,
+                          isLoading: _isSubmitting,
+                          onConfirm: _handleConfirmBooking,
+                          totalPrice: _calculateTotal(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -408,211 +371,5 @@ class _BookingScreenState extends State<BookingScreen>
     final basePrice = _serviceMap['basePrice'] as double;
     const serviceFee = 8.50;
     return basePrice + serviceFee;
-  }
-}
-
-class _BookingSuccessSheet extends StatelessWidget {
-  final String serviceName;
-  final String providerName;
-  final DateTime selectedDate;
-  final Map<String, dynamic> selectedSlot;
-  final VoidCallback onGoHome;
-
-  const _BookingSuccessSheet({
-    required this.serviceName,
-    required this.providerName,
-    required this.selectedDate,
-    required this.selectedSlot,
-    required this.onGoHome,
-  });
-
-  String _formatDate(DateTime date) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    final weekday = days[date.weekday - 1];
-    return '$weekday, ${months[date.month - 1]} ${date.day}, ${date.year}';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(28),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 72,
-            height: 72,
-            decoration: BoxDecoration(
-              color: AppTheme.successContainer,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(Icons.check_rounded, color: AppTheme.success, size: 38),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Booking Requested!',
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              color: theme.colorScheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Your booking is pending confirmation from $providerName. You\'ll be notified once they respond.',
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 13,
-              color: theme.colorScheme.onSurfaceVariant,
-              height: 1.5,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Column(
-              children: [
-                _SummaryRow(
-                  icon: Icons.cleaning_services_rounded,
-                  label: 'Service',
-                  value: serviceName,
-                ),
-                const SizedBox(height: 10),
-                _SummaryRow(
-                  icon: Icons.person_rounded,
-                  label: 'Provider',
-                  value: providerName,
-                ),
-                const SizedBox(height: 10),
-                _SummaryRow(
-                  icon: Icons.calendar_today_rounded,
-                  label: 'Date',
-                  value: _formatDate(selectedDate),
-                ),
-                const SizedBox(height: 10),
-                _SummaryRow(
-                  icon: Icons.schedule_rounded,
-                  label: 'Time',
-                  value:
-                      '${selectedSlot['startTime']} – ${selectedSlot['endTime']}',
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 22),
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: FilledButton(
-              onPressed: onGoHome,
-              style: FilledButton.styleFrom(
-                backgroundColor: AppTheme.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
-              child: Text(
-                'Back to Home',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            width: double.infinity,
-            height: 46,
-            child: OutlinedButton(
-              onPressed: () => Navigator.pop(context),
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: theme.colorScheme.outlineVariant),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
-              child: Text(
-                'View Booking Details',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.primary,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SummaryRow extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-
-  const _SummaryRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      children: [
-        Icon(icon, size: 16, color: AppTheme.primary),
-        const SizedBox(width: 8),
-        Text(
-          '$label:',
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        const SizedBox(width: 6),
-        Expanded(
-          child: Text(
-            value,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: theme.colorScheme.onSurface,
-            ),
-            textAlign: TextAlign.right,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
   }
 }

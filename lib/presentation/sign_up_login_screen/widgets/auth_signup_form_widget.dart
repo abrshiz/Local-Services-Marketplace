@@ -4,13 +4,11 @@ import '../../../core/app_export.dart';
 
 class AuthSignupFormWidget extends StatefulWidget {
   final bool isLoading;
-  final String selectedRole;
   final Function(Map<String, String>) onSubmit;
 
   const AuthSignupFormWidget({
     super.key,
     required this.isLoading,
-    required this.selectedRole,
     required this.onSubmit,
   });
 
@@ -19,7 +17,6 @@ class AuthSignupFormWidget extends StatefulWidget {
 }
 
 class _AuthSignupFormWidgetState extends State<AuthSignupFormWidget> {
-  // TODO: Replace with Riverpod/Bloc for production
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -27,6 +24,9 @@ class _AuthSignupFormWidgetState extends State<AuthSignupFormWidget> {
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
   bool _acceptTerms = false;
+
+  // Role is selected inside signup — not on the parent screen
+  String _selectedRole = 'customer';
 
   @override
   void dispose() {
@@ -40,7 +40,7 @@ class _AuthSignupFormWidgetState extends State<AuthSignupFormWidget> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isProvider = widget.selectedRole == 'provider';
+    final isProvider = _selectedRole == 'provider';
 
     return Form(
       key: _formKey,
@@ -66,7 +66,12 @@ class _AuthSignupFormWidgetState extends State<AuthSignupFormWidget> {
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 22),
+          const SizedBox(height: 20),
+
+          // ── Role Selector (inline) ──────────────────────────────────────
+          _buildRoleSelector(theme),
+          const SizedBox(height: 20),
+
           // Full name
           TextFormField(
             controller: _nameController,
@@ -168,7 +173,6 @@ class _AuthSignupFormWidgetState extends State<AuthSignupFormWidget> {
               prefixIconConstraints: const BoxConstraints(minWidth: 0),
               suffixIcon: IconButton(
                 onPressed: () {
-                  // TODO: Replace with Riverpod/Bloc for production
                   setState(() => _obscurePassword = !_obscurePassword);
                 },
                 icon: CustomIconWidget(
@@ -190,7 +194,6 @@ class _AuthSignupFormWidgetState extends State<AuthSignupFormWidget> {
           // Terms acceptance
           GestureDetector(
             onTap: () {
-              // TODO: Replace with Riverpod/Bloc for production
               setState(() => _acceptTerms = !_acceptTerms);
             },
             child: Row(
@@ -202,7 +205,6 @@ class _AuthSignupFormWidgetState extends State<AuthSignupFormWidget> {
                   child: Checkbox(
                     value: _acceptTerms,
                     onChanged: (val) {
-                      // TODO: Replace with Riverpod/Bloc for production
                       setState(() => _acceptTerms = val ?? false);
                     },
                     activeColor: AppTheme.primary,
@@ -264,7 +266,7 @@ class _AuthSignupFormWidgetState extends State<AuthSignupFormWidget> {
                           'email': _emailController.text,
                           'phone': _phoneController.text,
                           'password': _passwordController.text,
-                          'role': widget.selectedRole,
+                          'role': _selectedRole, // role is captured here
                         });
                       }
                     },
@@ -295,6 +297,115 @@ class _AuthSignupFormWidgetState extends State<AuthSignupFormWidget> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildRoleSelector(ThemeData theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'I want to...',
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            _RoleOption(
+              icon: Icons.person_rounded,
+              label: 'Book Services',
+              value: 'customer',
+              selectedValue: _selectedRole,
+              onTap: () => setState(() => _selectedRole = 'customer'),
+            ),
+            const SizedBox(width: 10),
+            _RoleOption(
+              icon: Icons.handyman_rounded,
+              label: 'Offer Services',
+              value: 'provider',
+              selectedValue: _selectedRole,
+              onTap: () => setState(() => _selectedRole = 'provider'),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _RoleOption extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final String selectedValue;
+  final VoidCallback onTap;
+
+  const _RoleOption({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.selectedValue,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isSelected = value == selectedValue;
+
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOutCubic,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+          decoration: BoxDecoration(
+            color: isSelected ? AppTheme.primaryContainer : theme.colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isSelected ? AppTheme.primary : theme.colorScheme.outlineVariant,
+              width: isSelected ? 2 : 1,
+            ),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: AppTheme.primary.withAlpha(38),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 18,
+                color: isSelected ? AppTheme.primary : theme.colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: isSelected ? AppTheme.primary : theme.colorScheme.onSurface,
+                ),
+              ),
+              if (isSelected) ...[
+                const SizedBox(width: 6),
+                Icon(Icons.check_circle_rounded, color: AppTheme.primary, size: 14),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }

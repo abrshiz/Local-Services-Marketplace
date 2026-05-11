@@ -2,9 +2,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/app_export.dart';
 import '../../routes/app_routes.dart';
-import './widgets/auth_demo_credentials_widget.dart';
 import './widgets/auth_login_form_widget.dart';
-import './widgets/auth_role_selector_widget.dart';
 import './widgets/auth_signup_form_widget.dart';
 import './widgets/auth_logo_widget.dart';
 import './widgets/auth_tab_widget.dart';
@@ -18,9 +16,7 @@ class SignUpLoginScreen extends StatefulWidget {
 
 class _SignUpLoginScreenState extends State<SignUpLoginScreen>
     with TickerProviderStateMixin {
-  // TODO: Replace with Riverpod/Bloc for production
   bool _isLogin = true;
-  String _selectedRole = 'customer';
   bool _isLoading = false;
 
   late AnimationController _logoController;
@@ -65,7 +61,6 @@ class _SignUpLoginScreenState extends State<SignUpLoginScreen>
   }
 
   void _switchAuthMode() {
-    // TODO: Replace with Riverpod/Bloc for production
     _formController.reset();
     setState(() => _isLogin = !_isLogin);
     _formController.forward();
@@ -74,6 +69,7 @@ class _SignUpLoginScreenState extends State<SignUpLoginScreen>
   Future<void> _handleSubmit(Map<String, String> formData) async {
     final email = formData['email'];
     final password = formData['password'];
+    final role = formData['role']; // present on signup, null on login
 
     // TODO: Replace with real authentication for production
     setState(() => _isLoading = true);
@@ -82,26 +78,44 @@ class _SignUpLoginScreenState extends State<SignUpLoginScreen>
     if (mounted) {
       setState(() => _isLoading = false);
 
-      // Simple demo validation
-      if (email == 'user@example.com' && password == 'password123') {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          AppRoutes.mainContainer,
-          (route) => false,
-        );
+      // Demo login validation
+      if (_isLogin) {
+        if (email == 'user@example.com' && password == 'password123') {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.mainContainer,
+            (route) => false,
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Invalid email or password. Use: user@example.com / password123',
+                style: GoogleFonts.plusJakartaSans(fontSize: 14),
+              ),
+              backgroundColor: const Color(0xFFE53935),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              margin: const EdgeInsets.all(16),
+            ),
+          );
+        }
       } else {
+        // Signup — role is captured from the form (formData['role'])
+        // TODO: Register user with role in backend
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Invalid email or password. Hint: user@example.com / password123',
+              'Account created as ${role == 'provider' ? 'Service Provider' : 'Customer'}! Please sign in.',
               style: GoogleFonts.plusJakartaSans(fontSize: 14),
             ),
-            backgroundColor: const Color(0xFFE53935),
+            backgroundColor: AppTheme.success,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             margin: const EdgeInsets.all(16),
           ),
         );
+        _switchAuthMode(); // Switch back to login after signup
       }
     }
   }
@@ -257,16 +271,7 @@ class _SignUpLoginScreenState extends State<SignUpLoginScreen>
               ),
             ),
             const SizedBox(height: 24),
-            // Role selector
-            AuthRoleSelectorWidget(
-              selectedRole: _selectedRole,
-              onRoleChanged: (role) {
-                // TODO: Replace with Riverpod/Bloc for production
-                setState(() => _selectedRole = role);
-              },
-            ),
-            const SizedBox(height: 20),
-            // Form
+            // Form — role selector is now embedded inside AuthSignupFormWidget
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               switchInCurve: Curves.easeOutCubic,
@@ -292,7 +297,6 @@ class _SignUpLoginScreenState extends State<SignUpLoginScreen>
                   : AuthSignupFormWidget(
                       key: const ValueKey('signup'),
                       isLoading: _isLoading,
-                      selectedRole: _selectedRole,
                       onSubmit: _handleSubmit,
                     ),
             ),
@@ -324,14 +328,6 @@ class _SignUpLoginScreenState extends State<SignUpLoginScreen>
                 ),
               ),
             ),
-            const SizedBox(height: 24),
-            // Demo credentials
-            if (_isLogin)
-              AuthDemoCredentialsWidget(
-                onCredentialSelected: (email, password) {
-                  // TODO: Handle demo credentials selection
-                },
-              ),
           ],
         ),
       ),

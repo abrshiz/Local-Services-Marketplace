@@ -1,5 +1,4 @@
 import 'package:flutter/services.dart';
-
 import '../core/app_export.dart';
 import '../widgets/custom_error_widget.dart';
 import './routes/app_routes.dart';

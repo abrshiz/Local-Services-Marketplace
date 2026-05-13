@@ -38,7 +38,11 @@ class ProfileScreen extends StatelessWidget {
             ]),
             const SizedBox(height: 24),
             _buildSection(theme, 'Settings', [
-              ProfileMenuItemWidget(icon: Icons.notifications_none_rounded, label: 'Notifications', onTap: () {}),
+              ProfileMenuItemWidget(
+                icon: Icons.notifications_none_rounded,
+                label: 'Notifications',
+                onTap: () => Navigator.pushNamed(context, AppRoutes.notificationsScreen),
+              ),
               ProfileMenuItemWidget(icon: Icons.security_rounded, label: 'Security', onTap: () {}),
               ProfileMenuItemWidget(icon: Icons.language_rounded, label: 'Language', onTap: () {}),
             ]),
@@ -93,11 +97,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               child: const CircleAvatar(
                 radius: 50,
-                backgroundColor: Color(0xFFF3E5F5),
-                child: Text(
-                  'A',
-                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.blue),
-                ),
+                backgroundImage: NetworkImage('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde'),
               ),
             ),
             Positioned(
@@ -110,7 +110,7 @@ class ProfileScreen extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: theme.scaffoldBackgroundColor, width: 3),
                 ),
-                child: const Icon(Icons.edit_rounded, color: Colors.white, size: 16),
+                child: const Icon(Icons.camera_alt_rounded, color: Colors.white, size: 16),
               ),
             ),
           ],
@@ -128,6 +128,40 @@ class ProfileScreen extends StatelessWidget {
           'alex.johnson@example.com',
           style: GoogleFonts.plusJakartaSans(
             fontSize: 14,
+            color: theme.colorScheme.onSurfaceVariant,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildStatItem(theme, '12', 'Bookings'),
+            const SizedBox(width: 24),
+            _buildStatItem(theme, '4.9', 'Rating'),
+            const SizedBox(width: 24),
+            _buildStatItem(theme, '3', 'Reviews'),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatItem(ThemeData theme, String value, String label) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+            color: theme.colorScheme.onSurface,
+          ),
+        ),
+        Text(
+          label,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 12,
             color: theme.colorScheme.onSurfaceVariant,
             fontWeight: FontWeight.w500,
           ),

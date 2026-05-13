@@ -8,7 +8,7 @@ class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return SliverAppBar(
-      expandedHeight: 100,
+      expandedHeight: 64,
       floating: true,
       snap: true,
       pinned: false,
@@ -17,20 +17,28 @@ class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: theme.colorScheme.surface,
       shadowColor: theme.colorScheme.outline,
       flexibleSpace: FlexibleSpaceBar(
-        titlePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        titlePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         title: Row(
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 36,
+              height: 36,
               decoration: BoxDecoration(
-                color: AppTheme.primary,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.primary.withAlpha(40),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-              child: const Icon(
-                Icons.home_repair_service_rounded,
-                color: Colors.white,
-                size: 18,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
             const SizedBox(width: 10),
@@ -50,7 +58,7 @@ class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           onPressed: () {
-            // TODO: Navigate to notifications screen
+            Navigator.pushNamed(context, AppRoutes.notificationsScreen);
           },
           icon: Stack(
             children: [
@@ -63,11 +71,17 @@ class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 right: 0,
                 top: 0,
                 child: Container(
-                  width: 8,
-                  height: 8,
+                  width: 9,
+                  height: 9,
                   decoration: const BoxDecoration(
                     color: Color(0xFFE53935),
                     shape: BoxShape.circle,
+                  ),
+                  child: const Center(
+                    child: Text(
+                      '3',
+                      style: TextStyle(color: Colors.white, fontSize: 5, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               ),
@@ -78,12 +92,7 @@ class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.only(right: 16),
           child: GestureDetector(
             onTap: () {
-              // Logout: navigate back to login
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                AppRoutes.signUpLoginScreen,
-                (route) => false,
-              );
+              Navigator.pushNamed(context, AppRoutes.profileScreen);
             },
             child: CircleAvatar(
               radius: 17,
@@ -104,5 +113,5 @@ class HomeAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(100);
+  Size get preferredSize => const Size.fromHeight(64);
 }

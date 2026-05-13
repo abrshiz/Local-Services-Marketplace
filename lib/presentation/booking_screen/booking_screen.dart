@@ -33,8 +33,16 @@ class _BookingScreenState extends State<BookingScreen>
   // Service data will be populated from backend/API or navigation arguments
   late Map<String, dynamic> _serviceMap;
 
-  // Time slots will be populated from backend/API
-  final List<Map<String, dynamic>> _timeSlotsMaps = [];
+  // Time slots populated with demo data
+  final List<Map<String, dynamic>> _timeSlotsMaps = [
+    {'slotId': 'ts_01', 'startTime': '08:00 AM', 'endTime': '09:00 AM', 'period': 'Morning', 'isAvailable': true},
+    {'slotId': 'ts_02', 'startTime': '09:00 AM', 'endTime': '10:00 AM', 'period': 'Morning', 'isAvailable': false},
+    {'slotId': 'ts_03', 'startTime': '10:00 AM', 'endTime': '11:00 AM', 'period': 'Morning', 'isAvailable': true},
+    {'slotId': 'ts_04', 'startTime': '01:00 PM', 'endTime': '02:00 PM', 'period': 'Afternoon', 'isAvailable': true},
+    {'slotId': 'ts_05', 'startTime': '02:00 PM', 'endTime': '03:00 PM', 'period': 'Afternoon', 'isAvailable': true},
+    {'slotId': 'ts_06', 'startTime': '06:00 PM', 'endTime': '07:00 PM', 'period': 'Evening', 'isAvailable': true},
+    {'slotId': 'ts_07', 'startTime': '07:00 PM', 'endTime': '08:00 PM', 'period': 'Evening', 'isAvailable': false},
+  ];
 
   @override
   void initState() {

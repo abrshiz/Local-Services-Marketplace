@@ -1,6 +1,7 @@
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/app_export.dart';
+import '../../../routes/app_routes.dart';
 
 class BookingServiceSummaryWidget extends StatelessWidget {
   final Map<String, dynamic> service;
@@ -220,7 +221,15 @@ class BookingServiceSummaryWidget extends StatelessWidget {
                       ),
                     ),
                     OutlinedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        // Navigate to Messages tab in MainContainer
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          AppRoutes.mainContainer,
+                          (route) => false,
+                          arguments: 2, // Index of Messages tab
+                        );
+                      },
                       icon: const Icon(
                         Icons.chat_bubble_outline_rounded,
                         size: 14,

@@ -14,6 +14,15 @@ class MainContainerScreen extends StatefulWidget {
 class _MainContainerScreenState extends State<MainContainerScreen> {
   int _navIndex = 0;
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is int) {
+      _navIndex = args;
+    }
+  }
+
   final List<Widget> _screens = [
     const HomeScreen(),
     const BookingsListScreen(),

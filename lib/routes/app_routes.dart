@@ -7,6 +7,7 @@ import '../presentation/main_container/main_container_screen.dart';
 import '../presentation/bookings_list_screen/bookings_list_screen.dart';
 import '../presentation/messages_screen/messages_screen.dart';
 import '../presentation/profile_screen/profile_screen.dart';
+import '../presentation/notifications_screen/notifications_screen.dart';
 
 class AppRoutes {
   static const String initial = '/';
@@ -17,6 +18,7 @@ class AppRoutes {
   static const String bookingsListScreen = '/bookings-list-screen';
   static const String messagesScreen = '/messages-screen';
   static const String profileScreen = '/profile-screen';
+  static const String notificationsScreen = '/notifications-screen';
 
   static Map<String, WidgetBuilder> routes = {
     initial: (context) => const SignUpLoginScreen(),
@@ -27,5 +29,6 @@ class AppRoutes {
     bookingsListScreen: (context) => const BookingsListScreen(),
     messagesScreen: (context) => const MessagesScreen(),
     profileScreen: (context) => const ProfileScreen(),
+    notificationsScreen: (context) => const NotificationsScreen(),
   };
 }

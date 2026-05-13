@@ -1,5 +1,6 @@
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/app_export.dart';
+import '../chat_detail_screen.dart';
 
 class ChatListItemWidget extends StatelessWidget {
   final Map<String, dynamic> chat;
@@ -13,7 +14,12 @@ class ChatListItemWidget extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        // TODO: Navigate to chat details
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatDetailScreen(chat: chat),
+          ),
+        );
       },
       borderRadius: BorderRadius.circular(16),
       child: Container(

@@ -11,28 +11,39 @@ class AuthLogoWidget extends StatelessWidget {
     return Column(
       children: [
         Container(
-          width: 72,
-          height: 72,
+          width: 88,
+          height: 88,
           decoration: BoxDecoration(
             color: isOnDark
                 ? Colors.white.withAlpha(38)
                 : AppTheme.primaryContainer,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(24),
             border: isOnDark
                 ? Border.all(color: Colors.white.withAlpha(77), width: 1.5)
                 : null,
+            boxShadow: isOnDark
+                ? null
+                : [
+                    BoxShadow(
+                      color: AppTheme.primary.withAlpha(50),
+                      blurRadius: 20,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
           ),
-          child: Icon(
-            Icons.home_repair_service_rounded,
-            color: isOnDark ? Colors.white : AppTheme.primary,
-            size: 36,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(22),
+            child: Image.asset(
+              'assets/images/logo.png',
+              fit: BoxFit.contain,
+            ),
           ),
         ),
         const SizedBox(height: 14),
         Text(
-          'Local Service',
+          'LocalService',
           style: GoogleFonts.plusJakartaSans(
-            fontSize: 26,
+            fontSize: 28,
             fontWeight: FontWeight.w800,
             color: isOnDark ? Colors.white : theme.colorScheme.onSurface,
             letterSpacing: -0.5,

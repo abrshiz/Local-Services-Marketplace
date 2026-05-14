@@ -3,8 +3,13 @@ import '../core/app_export.dart';
 import '../widgets/custom_error_widget.dart';
 import './routes/app_routes.dart';
 
+import './core/services/auth_service.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Auth Service
+  await AuthService().init();
 
   bool hasShownError = false;
 
@@ -55,7 +60,9 @@ class MyApp extends StatelessWidget {
           // 🚨 END CRITICAL SECTION
           debugShowCheckedModeBanner: false,
           routes: AppRoutes.routes,
-          initialRoute: AppRoutes.initial,
+          initialRoute: AuthService().isAuthenticated 
+              ? AppRoutes.mainContainer 
+              : AppRoutes.initial,
         );
       },
     );

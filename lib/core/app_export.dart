@@ -8,3 +8,6 @@ export '../widgets/app_navigation.dart';
 export '../widgets/empty_state_widget.dart';
 export '../widgets/loading_skeleton_widget.dart';
 export '../widgets/status_badge_widget.dart';
+export './services/auth_service.dart';
+export './network/api_client.dart';
+export './models/user_model.dart';

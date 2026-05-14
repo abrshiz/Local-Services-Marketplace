@@ -69,55 +69,50 @@ class _SignUpLoginScreenState extends State<SignUpLoginScreen>
   Future<void> _handleSubmit(Map<String, String> formData) async {
     final email = formData['email'];
     final password = formData['password'];
-    final role = formData['role']; // present on signup, null on login
+    final role = formData['role'];
 
-    // TODO: Replace with real authentication for production
     setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 1500));
 
-    if (mounted) {
-      setState(() => _isLoading = false);
-
-      // Demo login validation
-      if (_isLogin) {
-        if (email == 'user@example.com' && password == 'password123') {
+    if (_isLogin) {
+      final success = await AuthService().login(email!, password!);
+      if (mounted) {
+        setState(() => _isLoading = false);
+        if (success) {
           Navigator.pushNamedAndRemoveUntil(
             context,
             AppRoutes.mainContainer,
             (route) => false,
           );
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Invalid email or password. Use: user@example.com / password123',
-                style: GoogleFonts.plusJakartaSans(fontSize: 14),
-              ),
-              backgroundColor: const Color(0xFFE53935),
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              margin: const EdgeInsets.all(16),
-            ),
-          );
+          _showError('Invalid email or password.');
         }
-      } else {
-        // Signup — role is captured from the form (formData['role'])
-        // TODO: Register user with role in backend
+      }
+    } else {
+      // Mock signup
+      await Future.delayed(const Duration(seconds: 1));
+      if (mounted) {
+        setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              'Account created as ${role == 'provider' ? 'Service Provider' : 'Customer'}! Please sign in.',
-              style: GoogleFonts.plusJakartaSans(fontSize: 14),
-            ),
+            content: Text('Account created as $role! Please sign in.'),
             backgroundColor: AppTheme.success,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            margin: const EdgeInsets.all(16),
           ),
         );
-        _switchAuthMode(); // Switch back to login after signup
+        _switchAuthMode();
       }
     }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: GoogleFonts.plusJakartaSans(fontSize: 14)),
+        backgroundColor: const Color(0xFFE53935),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        margin: const EdgeInsets.all(16),
+      ),
+    );
   }
 
   @override

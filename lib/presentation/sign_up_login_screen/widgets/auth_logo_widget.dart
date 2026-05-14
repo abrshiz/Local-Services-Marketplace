@@ -34,7 +34,7 @@ class AuthLogoWidget extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(22),
             child: Image.asset(
-              'assets/images/logo.png',
+              'assets/logo.png',
               fit: BoxFit.contain,
             ),
           ),

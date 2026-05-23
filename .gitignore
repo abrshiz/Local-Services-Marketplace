@@ -1,16 +1,27 @@
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+pubspec.lock
+
+# IDE
+.idea/
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
+.vscode/
+
+# Android
+.gradle/
+local.properties
+**/android/**/captures/
 .externalNativeBuild
 .cxx
-local.properties
-.vscode
+
+# iOS/macOS
+**/Pods/
+**/DerivedData/
+
+# Misc
+.DS_Store
+*.log

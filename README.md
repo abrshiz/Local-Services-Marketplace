@@ -1,38 +1,65 @@
-# Local Services Marketplace
+# LocalServe — Local Services Marketplace
 
-Cross-platform Flutter app with a **Node.js + Express + SQLite** REST API backend.
+<p align="center">
+  <img
+    src="assets/Gemini_Generated_Image_omf6e4omf6e4omf6.png"
+    alt="LocalServe — book trusted pros near you"
+    width="720"
+    style="border-radius: 16px;"
+  />
+</p>
+
+<p align="center">
+  <strong>Book trusted pros near you.</strong><br />
+  Cross-platform Flutter app · Node.js REST API · SQLite · Deployed on Render
+</p>
+
+---
+
+## Features
+
+| For customers | For providers |
+|---------------|---------------|
+| Browse categories & nearby providers | Dashboard & incoming booking requests |
+| Provider profiles with ratings & reviews | Accept / reject requests |
+| Book services & track status | Earnings & schedule overview |
+| In-app chat with providers | Chat with customers |
+| Map view · payments · reviews | Register with work categories |
+
+**Also included:** light/dark theme · offline detection · JWT auth · production API on Render
+
+---
 
 ## Quick start
 
-### 1. Start the API
+### 1. Backend (optional — app uses Render by default)
 
 ```bash
 cd backend
 npm install
-npm run seed    # first time only — demo users & data
+npm run seed    # first time only — demo users & providers
 npm run dev     # http://localhost:3000
 ```
 
-### 2. Run the Flutter app
+### 2. Flutter app
 
 ```bash
 flutter pub get
 flutter run
 ```
 
-The app defaults to the production API: **https://localservicemarket-api.onrender.com**
+**Production API (default on Android/iOS):**  
+`https://localservicemarket-api.onrender.com`
 
-Local backend during development:
+| Scenario | Command |
+|----------|---------|
+| Local API (emulator) | `flutter run --dart-define=API_BASE_URL=http://10.0.2.2:3000` |
+| Offline mock (dev only) | `flutter run --dart-define=USE_MOCK_API=true` |
+| Release APK | `flutter build apk --release` then `flutter install` |
 
-```bash
-flutter run --dart-define=API_BASE_URL=http://10.0.2.2:3000
-```
+> **Note:** Render free tier may take up to ~60s to wake on first request after idle. Stay on the screen or pull to refresh.
 
-Use the offline mock store instead of the API:
-
-```bash
-flutter run --dart-define=USE_MOCK_API=true
-```
+---
 
 ## Demo accounts
 
@@ -40,27 +67,48 @@ flutter run --dart-define=USE_MOCK_API=true
 |------|-------|----------|
 | Customer | `customer@demo.com` | `password123` |
 | Provider | `provider1@demo.com` | `password123` |
+| Provider | `provider2@demo.com` | `password123` |
 
-## Architecture
+New providers can register in the app and select **work categories**; they appear in customer discovery after signup.
+
+---
+
+## Project structure
 
 ```
-lib/          Flutter — Clean Architecture + BLoC
-backend/      REST API — Express, SQLite, JWT auth
+lib/                 Flutter — Clean Architecture, BLoC, get_it
+  presentation/      Auth, discovery, booking, chat, profile
+  domain/            Entities & repository contracts
+  data/              REST (Dio) + optional mock datasource
+backend/             Express API, SQLite, JWT
+assets/              App icon & promo artwork
 ```
 
-### API highlights
+---
 
-- `POST /api/v1/auth/login` · `register` · `GET /auth/me`
-- `GET /api/v1/categories` · `services` · `providers/nearby` · `providers/:id` · `providers/:id/reviews`
-- `GET/POST /api/v1/conversations` · `GET/POST /conversations/:id/messages` (customer ↔ provider chat)
-- `GET /api/v1/slots` · `POST /bookings` · `PATCH /bookings/:id/status`
-- `POST /api/v1/payments` · `POST /payments/:id/process`
-- `POST /api/v1/reviews`
+## API overview
 
-All protected routes use `Authorization: Bearer <token>`.
+| Area | Endpoints |
+|------|-----------|
+| Auth | `POST /api/v1/auth/login` · `register` · `GET /auth/me` |
+| Discovery | `GET /categories` · `services` · `providers/nearby` · `providers/:id` · `providers/:id/reviews` |
+| Chat | `GET/POST /conversations` · `GET/POST /conversations/:id/messages` |
+| Bookings | `GET/POST /bookings` · `PATCH /bookings/:id/status` · `start` · `complete` |
+| Payments | `POST /payments` · `POST /payments/:id/process` |
+| Reviews | `POST /reviews` · `GET /reviews/exists` |
 
-On first deploy, the API **auto-seeds** demo providers if the database is empty (same accounts as above).
+Protected routes: `Authorization: Bearer <token>`
+
+On first deploy, an **empty database is auto-seeded** with demo data (same accounts as above).
+
+---
 
 ## Google Maps (Android)
 
-The Maps SDK key is configured in `android/app/src/main/AndroidManifest.xml`. In [Google Cloud Console](https://console.cloud.google.com/), enable **Maps SDK for Android** and restrict the key to your app package: `com.localservicemarket.localservicemarket`.
+Maps key is in `android/app/src/main/AndroidManifest.xml`. Enable **Maps SDK for Android** in [Google Cloud Console](https://console.cloud.google.com/) and restrict the key to package `com.localservicemarket.localservicemarket`.
+
+---
+
+## License
+
+Private / educational use — adjust as needed for your deployment.

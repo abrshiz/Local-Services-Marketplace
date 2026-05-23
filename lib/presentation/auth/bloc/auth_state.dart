@@ -8,24 +8,30 @@ class AuthState extends Equatable {
     this.status = AuthStatus.initial,
     this.user,
     this.errorMessage,
+    this.isSubmitting = false,
   });
 
   final AuthStatus status;
   final User? user;
   final String? errorMessage;
+  final bool isSubmitting;
 
   AuthState copyWith({
     AuthStatus? status,
     User? user,
     String? errorMessage,
+    bool? isSubmitting,
+    bool clearError = false,
+    bool clearUser = false,
   }) {
     return AuthState(
       status: status ?? this.status,
-      user: user ?? this.user,
-      errorMessage: errorMessage,
+      user: clearUser ? null : (user ?? this.user),
+      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+      isSubmitting: isSubmitting ?? this.isSubmitting,
     );
   }
 
   @override
-  List<Object?> get props => [status, user, errorMessage];
+  List<Object?> get props => [status, user, errorMessage, isSubmitting];
 }

@@ -14,13 +14,10 @@ import {
   mapUser,
 } from './userMapper.js';
 import { setupProviderCategories } from './providerSetup.js';
+import { seedDatabaseIfEmpty } from './seedData.js';
 
 initSchema();
-
-const userCount = db.prepare('SELECT COUNT(*) AS c FROM users').get().c;
-if (userCount === 0) {
-  console.log('Empty DB — run: npm run seed');
-}
+seedDatabaseIfEmpty();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -167,6 +164,178 @@ app.get('/api/v1/providers/nearby', (req, res) => {
     .sort((a, b) => a.distanceKm - b.distanceKm);
 
   res.json(providers);
+});
+
+app.get('/api/v1/providers/:providerId', (req, res) => {
+  const user = mapUser(req.params.providerId);
+  if (!user || user.role !== 'PROVIDER') {
+    return res.status(404).json({ error: 'Provider not found' });
+  }
+  const reviewCount = db
+    .prepare('SELECT COUNT(*) AS c FROM reviews WHERE provider_id = ?')
+    .get(req.params.providerId).c;
+  const services = db
+    .prepare('SELECT * FROM services WHERE provider_id = ? AND is_active = 1')
+    .all(req.params.providerId)
+    .map(mapService);
+  res.json({ ...user, reviewCount, services });
+});
+
+app.get('/api/v1/providers/:providerId/reviews', (req, res) => {
+  const rows = db
+    .prepare(
+      `SELECT r.*, u.name AS reviewer_name
+       FROM reviews r
+       JOIN users u ON u.user_id = r.reviewer_id
+       WHERE r.provider_id = ?
+       ORDER BY r.created_at DESC
+       LIMIT 50`,
+    )
+    .all(req.params.providerId);
+  res.json(
+    rows.map((r) => ({
+      reviewId: r.review_id,
+      bookingId: r.booking_id,
+      reviewerId: r.reviewer_id,
+      reviewerName: r.reviewer_name,
+      providerId: r.provider_id,
+      rating: r.rating,
+      comment: r.comment,
+      createdAt: r.created_at,
+    })),
+  );
+});
+
+function mapConversationRow(row, currentUserId) {
+  const isCustomer = row.customer_id === currentUserId;
+  const peerId = isCustomer ? row.provider_id : row.customer_id;
+  const peer = db.prepare('SELECT name, role FROM users WHERE user_id = ?').get(peerId);
+  const lastMsg = db
+    .prepare(
+      `SELECT body, created_at, sender_id FROM messages
+       WHERE conversation_id = ? ORDER BY created_at DESC LIMIT 1`,
+    )
+    .get(row.conversation_id);
+  return {
+    conversationId: row.conversation_id,
+    customerId: row.customer_id,
+    providerId: row.provider_id,
+    peerId,
+    peerName: peer?.name ?? 'User',
+    peerRole: peer?.role,
+    lastMessage: lastMsg?.body ?? '',
+    lastMessageAt: lastMsg?.created_at ?? row.updated_at,
+    unread: lastMsg && lastMsg.sender_id !== currentUserId,
+  };
+}
+
+app.get('/api/v1/conversations', requireAuth, (req, res) => {
+  const rows = db
+    .prepare(
+      `SELECT * FROM conversations
+       WHERE customer_id = ? OR provider_id = ?
+       ORDER BY updated_at DESC`,
+    )
+    .all(req.userId, req.userId);
+  res.json(rows.map((r) => mapConversationRow(r, req.userId)));
+});
+
+app.post('/api/v1/conversations', requireAuth, (req, res) => {
+  const { peerId } = req.body;
+  if (!peerId) return res.status(400).json({ error: 'peerId required' });
+
+  const me = db.prepare('SELECT role FROM users WHERE user_id = ?').get(req.userId);
+  const peer = db.prepare('SELECT role FROM users WHERE user_id = ?').get(peerId);
+  if (!me || !peer) return res.status(404).json({ error: 'User not found' });
+
+  let customerId;
+  let providerId;
+  if (me.role === 'CUSTOMER' && peer.role === 'PROVIDER') {
+    customerId = req.userId;
+    providerId = peerId;
+  } else if (me.role === 'PROVIDER' && peer.role === 'CUSTOMER') {
+    customerId = peerId;
+    providerId = req.userId;
+  } else {
+    return res.status(400).json({ error: 'Chat is only between customers and providers' });
+  }
+
+  let row = db
+    .prepare(
+      'SELECT * FROM conversations WHERE customer_id = ? AND provider_id = ?',
+    )
+    .get(customerId, providerId);
+
+  if (!row) {
+    const conversationId = uuidv4();
+    const now = new Date().toISOString();
+    db.prepare(
+      'INSERT INTO conversations (conversation_id, customer_id, provider_id, updated_at) VALUES (?, ?, ?, ?)',
+    ).run(conversationId, customerId, providerId, now);
+    row = db
+      .prepare('SELECT * FROM conversations WHERE conversation_id = ?')
+      .get(conversationId);
+  }
+
+  res.status(201).json(mapConversationRow(row, req.userId));
+});
+
+app.get('/api/v1/conversations/:id/messages', requireAuth, (req, res) => {
+  const conv = db
+    .prepare('SELECT * FROM conversations WHERE conversation_id = ?')
+    .get(req.params.id);
+  if (!conv) return res.status(404).json({ error: 'Conversation not found' });
+  if (conv.customer_id !== req.userId && conv.provider_id !== req.userId) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+  const rows = db
+    .prepare(
+      `SELECT * FROM messages WHERE conversation_id = ? ORDER BY created_at ASC`,
+    )
+    .all(req.params.id);
+  res.json(
+    rows.map((m) => ({
+      messageId: m.message_id,
+      conversationId: m.conversation_id,
+      senderId: m.sender_id,
+      body: m.body,
+      createdAt: m.created_at,
+      isMine: m.sender_id === req.userId,
+    })),
+  );
+});
+
+app.post('/api/v1/conversations/:id/messages', requireAuth, (req, res) => {
+  const { body } = req.body;
+  if (!body || !String(body).trim()) {
+    return res.status(400).json({ error: 'Message body required' });
+  }
+  const conv = db
+    .prepare('SELECT * FROM conversations WHERE conversation_id = ?')
+    .get(req.params.id);
+  if (!conv) return res.status(404).json({ error: 'Conversation not found' });
+  if (conv.customer_id !== req.userId && conv.provider_id !== req.userId) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  const messageId = uuidv4();
+  const now = new Date().toISOString();
+  db.prepare(
+    'INSERT INTO messages (message_id, conversation_id, sender_id, body, created_at) VALUES (?, ?, ?, ?, ?)',
+  ).run(messageId, req.params.id, req.userId, String(body).trim(), now);
+  db.prepare('UPDATE conversations SET updated_at = ? WHERE conversation_id = ?').run(
+    now,
+    req.params.id,
+  );
+
+  res.status(201).json({
+    messageId,
+    conversationId: req.params.id,
+    senderId: req.userId,
+    body: String(body).trim(),
+    createdAt: now,
+    isMine: true,
+  });
 });
 
 // ——— Time slots ———

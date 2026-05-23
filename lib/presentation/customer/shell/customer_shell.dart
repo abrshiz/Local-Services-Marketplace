@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:localservicemarket/domain/entities/user.dart';
+import 'package:localservicemarket/presentation/chat/conversations_page.dart';
 import 'package:localservicemarket/presentation/customer/discovery/pages/discovery_home_page.dart';
 import 'package:localservicemarket/presentation/customer/discovery/pages/map_view_page.dart';
 import 'package:localservicemarket/presentation/customer/tracking/tracking_page.dart';
@@ -17,13 +18,20 @@ class CustomerShell extends StatefulWidget {
 class _CustomerShellState extends State<CustomerShell> {
   int _index = 0;
 
-  static const _titles = ['Discover', 'Nearby map', 'My bookings', 'Profile'];
+  static const _titles = [
+    'Discover',
+    'Nearby map',
+    'Messages',
+    'My bookings',
+    'Profile',
+  ];
 
   @override
   Widget build(BuildContext context) {
     final pages = [
       DiscoveryHomePage(customer: widget.customer),
       MapViewPage(customer: widget.customer),
+      ConversationsPage(user: widget.customer),
       TrackingPage(customer: widget.customer),
       ProfilePage(user: widget.customer),
     ];
@@ -80,6 +88,11 @@ class _CustomerShellState extends State<CustomerShell> {
               icon: Icon(Icons.map_outlined),
               selectedIcon: Icon(Icons.map_rounded),
               label: 'Map',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.chat_bubble_outline_rounded),
+              selectedIcon: Icon(Icons.chat_bubble_rounded),
+              label: 'Chat',
             ),
             NavigationDestination(
               icon: Icon(Icons.receipt_long_outlined),

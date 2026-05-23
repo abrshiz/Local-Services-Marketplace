@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localservicemarket/core/di/injection.dart';
 import 'package:localservicemarket/core/network/connectivity_cubit.dart';
+import 'package:localservicemarket/core/theme/app_colors.dart';
 import 'package:localservicemarket/domain/entities/service_category.dart';
 import 'package:localservicemarket/domain/enums/user_role.dart';
 import 'package:localservicemarket/domain/repositories/discovery_repository.dart';
@@ -29,6 +30,7 @@ class _AuthScreenState extends State<AuthScreen>
   final _bio = TextEditingController();
   UserRole _registerRole = UserRole.customer;
   bool _isLogin = true;
+  bool _obscurePassword = true;
   final Set<String> _selectedCategoryIds = {};
 
   @override
@@ -52,19 +54,20 @@ class _AuthScreenState extends State<AuthScreen>
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
+      listenWhen: (previous, current) =>
+          current.errorMessage != null &&
+          current.errorMessage != previous.errorMessage,
       listener: (context, state) {
-        if (state.status == AuthStatus.failure && state.errorMessage != null) {
-          final offline =
-              context.read<ConnectivityCubit>().state.showOfflinePage;
-          if (!offline) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage!)),
-            );
-          }
+        final offline =
+            context.read<ConnectivityCubit>().state.showOfflinePage;
+        if (!offline && state.errorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.errorMessage!)),
+          );
         }
       },
       builder: (context, state) {
-        final loading = state.status == AuthStatus.loading;
+        final submitting = state.isSubmitting;
         return Scaffold(
           body: Container(
             decoration: const BoxDecoration(
@@ -134,11 +137,15 @@ class _AuthScreenState extends State<AuthScreen>
                               onSelectionChanged: (s) =>
                                   setState(() => _isLogin = s.first),
                             ),
+                            if (state.errorMessage != null) ...[
+                              const SizedBox(height: 16),
+                              _AuthErrorBanner(message: state.errorMessage!),
+                            ],
                             const SizedBox(height: 24),
                             if (_isLogin) ...[
-                              _buildLogin(loading),
+                              _buildLogin(submitting),
                             ] else ...[
-                              _buildRegister(loading),
+                              _buildRegister(submitting),
                             ],
                           ],
                         ),
@@ -155,7 +162,7 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  Widget _buildLogin(bool loading) {
+  Widget _buildLogin(bool submitting) {
     return Form(
       key: _loginFormKey,
       child: Column(
@@ -183,7 +190,7 @@ class _AuthScreenState extends State<AuthScreen>
           ),
           const SizedBox(height: 24),
           FilledButton(
-            onPressed: loading
+            onPressed: submitting
                 ? null
                 : () {
                     if (_loginFormKey.currentState!.validate()) {
@@ -193,7 +200,7 @@ class _AuthScreenState extends State<AuthScreen>
                           );
                     }
                   },
-            child: loading
+            child: submitting
                 ? const SizedBox(
                     height: 22,
                     width: 22,
@@ -209,7 +216,7 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
-  Widget _buildRegister(bool loading) {
+  Widget _buildRegister(bool submitting) {
     final scheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -272,11 +279,20 @@ class _AuthScreenState extends State<AuthScreen>
               const SizedBox(height: 14),
               TextFormField(
                 controller: _password,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Password',
-                  prefixIcon: Icon(Icons.lock_outline_rounded),
+                  prefixIcon: const Icon(Icons.lock_outline_rounded),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                    ),
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
+                  ),
                 ),
-                obscureText: true,
+                obscureText: _obscurePassword,
                 validator: (v) =>
                     v == null || v.length < 6 ? 'Min 6 characters' : null,
               ),
@@ -298,7 +314,7 @@ class _AuthScreenState extends State<AuthScreen>
         ),
         const SizedBox(height: 20),
         FilledButton(
-          onPressed: loading
+          onPressed: submitting
               ? null
               : () {
                   if (!_registerFormKey.currentState!.validate()) return;
@@ -321,7 +337,7 @@ class _AuthScreenState extends State<AuthScreen>
                         categoryIds: _selectedCategoryIds.toList(),
                       );
                 },
-          child: loading
+          child: submitting
               ? const SizedBox(
                   height: 22,
                   width: 22,
@@ -392,6 +408,41 @@ class _AuthScreenState extends State<AuthScreen>
           ],
         );
       },
+    );
+  }
+}
+
+class _AuthErrorBanner extends StatelessWidget {
+  const _AuthErrorBanner({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.error.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.error.withValues(alpha: 0.35)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.error_outline_rounded, color: AppColors.error, size: 22),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              message,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.error,
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

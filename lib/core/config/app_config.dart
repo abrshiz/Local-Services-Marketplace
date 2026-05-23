@@ -2,7 +2,7 @@ class AppConfig {
   /// Production API (Render).
   static const productionApiUrl = 'https://localservicemarket-api.onrender.com';
 
-  /// Set `USE_MOCK_API=true` to use the offline mock store.
+  /// Production builds always use the Render API. Mock is opt-in only.
   static const useMockApi =
       bool.fromEnvironment('USE_MOCK_API', defaultValue: false);
 

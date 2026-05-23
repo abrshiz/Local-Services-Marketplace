@@ -274,6 +274,8 @@ class MockApiDataSource implements ApiDataSource {
       'bookings': <Map<String, dynamic>>[],
       'payments': <Map<String, dynamic>>[],
       'reviews': <Map<String, dynamic>>[],
+      'conversations': <Map<String, dynamic>>[],
+      'messages': <Map<String, dynamic>>[],
       'notifications': <Map<String, dynamic>>[],
     });
     _notifyPending();
@@ -720,5 +722,140 @@ class MockApiDataSource implements ApiDataSource {
           (u) => u!['userId'] == id,
           orElse: () => null,
         );
+  }
+
+  @override
+  Future<Map<String, dynamic>> getProviderProfile(String providerId) async {
+    await ensureInitialized();
+    final user = userById(providerId);
+    if (user == null || user['role'] != UserRole.provider.wireValue) {
+      throw ServerException('Provider not found');
+    }
+    final services = (_store()['services'] as List)
+        .cast<Map<String, dynamic>>()
+        .where((s) => s['providerId'] == providerId)
+        .toList();
+    return {
+      ...user,
+      'services': services,
+      'reviewCount': (_store()['reviews'] as List)
+          .cast<Map<String, dynamic>>()
+          .where((r) => r['providerId'] == providerId)
+          .length,
+    };
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getProviderReviews(String providerId) async {
+    await ensureInitialized();
+    return (_store()['reviews'] as List? ?? [])
+        .cast<Map<String, dynamic>>()
+        .where((r) => r['providerId'] == providerId)
+        .map(
+          (r) => {
+            'reviewId': r['reviewId'],
+            'reviewerName': 'Customer',
+            'rating': r['rating'],
+            'comment': r['comment'],
+            'createdAt': r['createdAt'],
+          },
+        )
+        .toList();
+  }
+
+  List<Map<String, dynamic>> _conversations() =>
+      (_store()['conversations'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+
+  List<Map<String, dynamic>> _messages() =>
+      (_store()['messages'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+
+  @override
+  Future<List<Map<String, dynamic>>> getConversations() async {
+    await ensureInitialized();
+    final me = _cache.getSessionUserId();
+    return _conversations()
+        .where((c) => c['customerId'] == me || c['providerId'] == me)
+        .toList();
+  }
+
+  @override
+  Future<Map<String, dynamic>> openConversation(String peerId) async {
+    await ensureInitialized();
+    final me = _cache.getSessionUserId()!;
+    final meUser = userById(me);
+    final peer = userById(peerId);
+    if (meUser == null || peer == null) throw AuthException('User not found');
+
+    String customerId;
+    String providerId;
+    if (meUser['role'] == UserRole.customer.wireValue &&
+        peer['role'] == UserRole.provider.wireValue) {
+      customerId = me;
+      providerId = peerId;
+    } else if (meUser['role'] == UserRole.provider.wireValue &&
+        peer['role'] == UserRole.customer.wireValue) {
+      customerId = peerId;
+      providerId = me;
+    } else {
+      throw AuthException('Chat is only between customers and providers');
+    }
+
+    final existing = _conversations().cast<Map<String, dynamic>?>().firstWhere(
+          (c) =>
+              c!['customerId'] == customerId && c['providerId'] == providerId,
+          orElse: () => null,
+        );
+    if (existing != null) {
+      return {
+        ...existing,
+        'peerId': peerId,
+        'peerName': peer['name'],
+      };
+    }
+    final conv = {
+      'conversationId': _uuid.v4(),
+      'customerId': customerId,
+      'providerId': providerId,
+      'peerId': peerId,
+      'peerName': peer['name'] ?? 'User',
+      'lastMessage': '',
+      'lastMessageAt': DateTime.now().toUtc().toIso8601String(),
+      'unread': false,
+    };
+    final store = _store();
+    final convs = _conversations()..add(conv);
+    store['conversations'] = convs;
+    await _cache.writeStore(store);
+    return conv;
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getMessages(String conversationId) async {
+    await ensureInitialized();
+    return _messages()
+        .where((m) => m['conversationId'] == conversationId)
+        .toList();
+  }
+
+  @override
+  Future<Map<String, dynamic>> sendMessage(
+    String conversationId,
+    String body,
+  ) async {
+    await ensureInitialized();
+    final me = _cache.getSessionUserId()!;
+    final msg = {
+      'messageId': _uuid.v4(),
+      'conversationId': conversationId,
+      'senderId': me,
+      'body': body,
+      'createdAt': DateTime.now().toUtc().toIso8601String(),
+      'isMine': true,
+    };
+    final store = _store();
+    final msgs = _messages()..add(msg);
+    store['messages'] = msgs;
+    await _cache.writeStore(store);
+    return msg;
   }
 }

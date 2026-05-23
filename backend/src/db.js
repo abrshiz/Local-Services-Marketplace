@@ -123,5 +123,23 @@ export function initSchema() {
       body TEXT,
       created_at TEXT NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS conversations (
+      conversation_id TEXT PRIMARY KEY,
+      customer_id TEXT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+      provider_id TEXT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+      updated_at TEXT NOT NULL,
+      UNIQUE(customer_id, provider_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS messages (
+      message_id TEXT PRIMARY KEY,
+      conversation_id TEXT NOT NULL REFERENCES conversations(conversation_id) ON DELETE CASCADE,
+      sender_id TEXT NOT NULL REFERENCES users(user_id),
+      body TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_messages_conversation ON messages(conversation_id, created_at);
   `);
 }

@@ -1,3 +1,5 @@
+import 'package:localservicemarket/domain/entities/provider_profile.dart';
+import 'package:localservicemarket/domain/entities/provider_review.dart';
 import 'package:localservicemarket/domain/entities/service.dart';
 import 'package:localservicemarket/domain/entities/service_category.dart';
 import 'package:localservicemarket/domain/entities/user.dart';
@@ -15,4 +17,6 @@ abstract class DiscoveryRepository {
     PriceType? priceType,
     String? query,
   });
+  Future<ProviderProfile> getProviderProfile(String providerId);
+  Future<List<ProviderReview>> getProviderReviews(String providerId);
 }

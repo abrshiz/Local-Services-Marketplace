@@ -68,6 +68,7 @@ class ServiceProvider extends User {
     this.isActive = true,
     this.latitude = 0,
     this.longitude = 0,
+    this.distanceKm,
   }) : super(role: UserRole.provider);
 
   final String bio;
@@ -77,6 +78,7 @@ class ServiceProvider extends User {
   final bool isActive;
   final double latitude;
   final double longitude;
+  final double? distanceKm;
 
   @override
   List<Object?> get props => [
@@ -88,5 +90,6 @@ class ServiceProvider extends User {
         isActive,
         latitude,
         longitude,
+        distanceKm,
       ];
 }

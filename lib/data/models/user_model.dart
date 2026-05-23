@@ -27,6 +27,7 @@ class UserModel {
         isActive: json['isActive'] as bool? ?? true,
         latitude: (json['latitude'] as num?)?.toDouble() ?? 0,
         longitude: (json['longitude'] as num?)?.toDouble() ?? 0,
+        distanceKm: (json['distanceKm'] as num?)?.toDouble(),
       );
     }
 
@@ -75,6 +76,7 @@ class UserModel {
         'isActive': user.isActive,
         'latitude': user.latitude,
         'longitude': user.longitude,
+        if (user.distanceKm != null) 'distanceKm': user.distanceKm,
       };
     }
 

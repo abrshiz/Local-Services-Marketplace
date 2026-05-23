@@ -9,12 +9,14 @@ import 'package:localservicemarket/data/datasources/remote/api_data_source.dart'
 import 'package:localservicemarket/data/datasources/remote/mock_api_datasource.dart';
 import 'package:localservicemarket/data/datasources/remote/remote_api_data_source.dart';
 import 'package:localservicemarket/data/repositories/auth_repository_impl.dart';
+import 'package:localservicemarket/data/repositories/chat_repository_impl.dart';
 import 'package:localservicemarket/data/repositories/booking_repository_impl.dart';
 import 'package:localservicemarket/data/repositories/discovery_repository_impl.dart';
 import 'package:localservicemarket/data/repositories/location_repository_impl.dart';
 import 'package:localservicemarket/data/repositories/payment_repository_impl.dart';
 import 'package:localservicemarket/data/repositories/review_repository_impl.dart';
 import 'package:localservicemarket/domain/repositories/auth_repository.dart';
+import 'package:localservicemarket/domain/repositories/chat_repository.dart';
 import 'package:localservicemarket/domain/repositories/booking_repository.dart';
 import 'package:localservicemarket/domain/repositories/discovery_repository.dart';
 import 'package:localservicemarket/domain/repositories/location_repository.dart';
@@ -59,6 +61,7 @@ Future<void> configureDependencies() async {
     () => PaymentRepositoryImpl(sl()),
   );
   sl.registerLazySingleton<ReviewRepository>(() => ReviewRepositoryImpl(sl()));
+  sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(sl()));
   sl.registerLazySingleton<LocationRepository>(
     () => LocationRepositoryImpl(),
   );
@@ -71,5 +74,6 @@ Future<void> configureDependencies() async {
   sl.registerFactory(() => ReviewCubit(sl()));
   sl.registerFactory(() => ProviderDashboardCubit(sl(), sl()));
 
-  await sl<ApiDataSource>().ensureInitialized();
+  // Warm API in background — do not block first frame.
+  sl<ApiDataSource>().ensureInitialized().catchError((_) {});
 }

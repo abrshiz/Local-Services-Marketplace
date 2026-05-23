@@ -51,12 +51,15 @@ backend/      REST API — Express, SQLite, JWT auth
 ### API highlights
 
 - `POST /api/v1/auth/login` · `register` · `GET /auth/me`
-- `GET /api/v1/categories` · `services` · `providers/nearby`
+- `GET /api/v1/categories` · `services` · `providers/nearby` · `providers/:id` · `providers/:id/reviews`
+- `GET/POST /api/v1/conversations` · `GET/POST /conversations/:id/messages` (customer ↔ provider chat)
 - `GET /api/v1/slots` · `POST /bookings` · `PATCH /bookings/:id/status`
 - `POST /api/v1/payments` · `POST /payments/:id/process`
 - `POST /api/v1/reviews`
 
 All protected routes use `Authorization: Bearer <token>`.
+
+On first deploy, the API **auto-seeds** demo providers if the database is empty (same accounts as above).
 
 ## Google Maps (Android)
 

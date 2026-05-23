@@ -21,7 +21,14 @@ class RemoteApiDataSource implements ApiDataSource {
 
   @override
   Future<void> ensureInitialized() async {
-    await _dio.get('/health');
+    try {
+      await _dio.get(
+        '/health',
+        options: Options(receiveTimeout: const Duration(seconds: 8)),
+      );
+    } catch (_) {
+      // App can still open; requests will retry when online.
+    }
   }
 
   Future<T> _get<T>(String path, {Map<String, dynamic>? query}) async {
@@ -346,5 +353,46 @@ class RemoteApiDataSource implements ApiDataSource {
       query: {'bookingId': bookingId},
     );
     return res['exists'] == true;
+  }
+
+  @override
+  Future<Map<String, dynamic>> getProviderProfile(String providerId) async {
+    return Map<String, dynamic>.from(
+      await _get('$_api/providers/$providerId') as Map,
+    );
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getProviderReviews(String providerId) async {
+    return _list(await _get('$_api/providers/$providerId/reviews'));
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getConversations() async {
+    return _list(await _get('$_api/conversations'));
+  }
+
+  @override
+  Future<Map<String, dynamic>> openConversation(String peerId) async {
+    return Map<String, dynamic>.from(
+      await _post('$_api/conversations', data: {'peerId': peerId}) as Map,
+    );
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getMessages(String conversationId) async {
+    return _list(await _get('$_api/conversations/$conversationId/messages'));
+  }
+
+  @override
+  Future<Map<String, dynamic>> sendMessage(
+    String conversationId,
+    String body,
+  ) async {
+    return Map<String, dynamic>.from(
+      await _post('$_api/conversations/$conversationId/messages', data: {
+        'body': body,
+      }) as Map,
+    );
   }
 }

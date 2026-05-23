@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localservicemarket/core/di/injection.dart';
 import 'package:localservicemarket/core/network/connectivity_cubit.dart';
+import 'package:localservicemarket/core/theme/app_colors.dart';
 import 'package:localservicemarket/core/theme/app_theme.dart';
 import 'package:localservicemarket/core/theme/theme_cubit.dart';
 import 'package:localservicemarket/domain/entities/user.dart';
@@ -70,7 +71,7 @@ class _RootRouter extends StatelessWidget {
           case AuthStatus.initial:
           case AuthStatus.loading:
             return Scaffold(
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              backgroundColor: AppColors.background,
               body: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

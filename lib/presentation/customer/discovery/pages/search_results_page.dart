@@ -4,8 +4,9 @@ import 'package:localservicemarket/core/theme/app_colors.dart';
 import 'package:localservicemarket/core/widgets/app_card.dart';
 import 'package:localservicemarket/core/widgets/empty_state.dart';
 import 'package:localservicemarket/domain/entities/user.dart';
-import 'package:localservicemarket/presentation/customer/booking/booking_flow_page.dart';
+import 'package:localservicemarket/core/widgets/star_rating.dart';
 import 'package:localservicemarket/presentation/customer/discovery/bloc/discovery_cubit.dart';
+import 'package:localservicemarket/presentation/customer/discovery/pages/provider_detail_page.dart';
 import 'package:localservicemarket/presentation/customer/discovery/bloc/discovery_state.dart';
 
 class SearchResultsPage extends StatelessWidget {
@@ -32,24 +33,18 @@ class SearchResultsPage extends StatelessWidget {
             itemCount: state.providers.length,
             itemBuilder: (context, i) {
               final p = state.providers[i];
-              final service = state.services
-                  .where((s) => s.providerId == p.userId)
-                  .firstOrNull;
               return Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: AppCard(
-                  onTap: service == null
-                      ? null
-                      : () => Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (_) => BookingFlowPage(
-                                customer: customer,
-                                provider: p,
-                                service: service,
-                              ),
-                            ),
+                  onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (_) => ProviderDetailPage(
+                            customer: customer,
+                            provider: p,
                           ),
+                        ),
+                      ),
                   child: Row(
                     children: [
                       CircleAvatar(
@@ -71,7 +66,7 @@ class SearchResultsPage extends StatelessWidget {
                               p.name,
                               style: const TextStyle(fontWeight: FontWeight.w700),
                             ),
-                            Text('${p.averageRating} ★ rating'),
+                            StarRating(rating: p.averageRating, size: 14),
                           ],
                         ),
                       ),

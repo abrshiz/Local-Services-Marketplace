@@ -85,4 +85,12 @@ abstract class ApiDataSource {
   });
 
   Future<bool> hasReview(String bookingId);
+
+  Future<Map<String, dynamic>> getProviderProfile(String providerId);
+  Future<List<Map<String, dynamic>>> getProviderReviews(String providerId);
+
+  Future<List<Map<String, dynamic>>> getConversations();
+  Future<Map<String, dynamic>> openConversation(String peerId);
+  Future<List<Map<String, dynamic>>> getMessages(String conversationId);
+  Future<Map<String, dynamic>> sendMessage(String conversationId, String body);
 }

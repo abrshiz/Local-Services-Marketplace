@@ -33,6 +33,11 @@ class AuthRepositoryImpl implements AuthRepository {
       throw AuthFailure(e.message);
     } on NetworkException catch (e) {
       throw AuthFailure(e.message);
+    } catch (e) {
+      if (e is AuthFailure) rethrow;
+      throw AuthFailure(
+        e is Exception ? e.toString().replaceFirst('Exception: ', '') : 'Login failed',
+      );
     }
   }
 
@@ -61,6 +66,11 @@ class AuthRepositoryImpl implements AuthRepository {
       throw AuthFailure(e.message);
     } on NetworkException catch (e) {
       throw AuthFailure(e.message);
+    } catch (e) {
+      if (e is AuthFailure) rethrow;
+      throw AuthFailure(
+        e is Exception ? e.toString().replaceFirst('Exception: ', '') : 'Registration failed',
+      );
     }
   }
 

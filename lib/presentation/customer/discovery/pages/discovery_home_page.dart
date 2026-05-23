@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localservicemarket/core/theme/app_colors.dart';
 import 'package:localservicemarket/core/widgets/app_card.dart';
+import 'package:localservicemarket/core/widgets/star_rating.dart';
+import 'package:localservicemarket/presentation/customer/discovery/pages/provider_detail_page.dart';
 import 'package:localservicemarket/core/widgets/section_header.dart';
 import 'package:localservicemarket/core/widgets/shimmer_box.dart';
 import 'package:localservicemarket/domain/entities/user.dart';
 import 'package:localservicemarket/domain/enums/price_type.dart';
-import 'package:localservicemarket/presentation/customer/booking/booking_flow_page.dart';
 import 'package:localservicemarket/presentation/customer/discovery/bloc/discovery_cubit.dart';
 import 'package:localservicemarket/presentation/customer/discovery/bloc/discovery_state.dart';
 import 'package:localservicemarket/presentation/customer/discovery/pages/search_results_page.dart';
@@ -52,8 +53,33 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return BlocBuilder<DiscoveryCubit, DiscoveryState>(
       builder: (context, state) {
+        if (state.status == DiscoveryStatus.failure) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(28),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.cloud_off_rounded, size: 48, color: scheme.primary),
+                  const SizedBox(height: 16),
+                  Text(
+                    state.errorMessage ?? 'Could not load providers',
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                  FilledButton(
+                    onPressed: () => context.read<DiscoveryCubit>().load(),
+                    child: const Text('Try again'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
         if (state.status == DiscoveryStatus.loading &&
             state.categories.isEmpty) {
           return ListView(
@@ -184,6 +210,32 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                   ),
                 ),
               ),
+              if (state.providers.isEmpty && state.status == DiscoveryStatus.loaded)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.person_search_rounded,
+                          size: 56,
+                          color: scheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'No providers found',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Try another category or pull to refresh.',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, i) {
@@ -192,23 +244,20 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                         .where((s) => s.providerId == provider.userId)
                         .toList();
                     final price = services.isNotEmpty
-                        ? services.first.basePrice
+                        ? services.map((s) => s.basePrice).reduce((a, b) => a < b ? a : b)
                         : null;
                     return Padding(
                       padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
                       child: AppCard(
-                        onTap: services.isEmpty
-                            ? null
-                            : () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute<void>(
-                                    builder: (_) => BookingFlowPage(
-                                      customer: widget.customer,
-                                      provider: provider,
-                                      service: services.first,
-                                    ),
-                                  ),
+                        onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (_) => ProviderDetailPage(
+                                  customer: widget.customer,
+                                  provider: provider,
                                 ),
+                              ),
+                            ),
                         child: Row(
                           children: [
                             CircleAvatar(
@@ -247,37 +296,24 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                                         ),
                                     ],
                                   ),
+                                  const SizedBox(height: 6),
+                                  StarRating(
+                                    rating: provider.averageRating,
+                                    size: 16,
+                                  ),
+                                  if (provider.distanceKm != null) ...[
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '${provider.distanceKm!.toStringAsFixed(1)} km away',
+                                      style: Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  ],
                                   const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.star_rounded,
-                                        size: 16,
-                                        color: Color(0xFFFBBF24),
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        provider.averageRating
-                                            .toStringAsFixed(1),
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          provider.skills
-                                              .map((s) => s.name)
-                                              .join(' · '),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall,
-                                        ),
-                                      ),
-                                    ],
+                                  Text(
+                                    provider.skills.map((s) => s.name).join(' · '),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context).textTheme.bodySmall,
                                   ),
                                 ],
                               ),

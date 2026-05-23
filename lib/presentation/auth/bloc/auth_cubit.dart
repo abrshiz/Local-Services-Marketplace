@@ -19,17 +19,42 @@ class AuthCubit extends Cubit<AuthState> {
         emit(AuthState(status: AuthStatus.authenticated, user: user));
       }
     } catch (e) {
-      emit(AuthState(status: AuthStatus.failure, errorMessage: e.toString()));
+      emit(
+        AuthState(
+          status: AuthStatus.unauthenticated,
+          errorMessage: 'Could not restore your session. Please sign in.',
+        ),
+      );
     }
   }
 
   Future<void> login(String email, String password) async {
-    emit(state.copyWith(status: AuthStatus.loading, errorMessage: null));
+    emit(
+      state.copyWith(
+        status: AuthStatus.unauthenticated,
+        isSubmitting: true,
+        clearError: true,
+      ),
+    );
     try {
       final user = await _authRepository.login(email: email, password: password);
       emit(AuthState(status: AuthStatus.authenticated, user: user));
     } on AuthFailure catch (e) {
-      emit(AuthState(status: AuthStatus.failure, errorMessage: e.message));
+      emit(
+        state.copyWith(
+          status: AuthStatus.unauthenticated,
+          isSubmitting: false,
+          errorMessage: e.message,
+        ),
+      );
+    } catch (_) {
+      emit(
+        state.copyWith(
+          status: AuthStatus.unauthenticated,
+          isSubmitting: false,
+          errorMessage: 'Something went wrong. Please try again.',
+        ),
+      );
     }
   }
 
@@ -42,7 +67,13 @@ class AuthCubit extends Cubit<AuthState> {
     String? bio,
     List<String> categoryIds = const [],
   }) async {
-    emit(state.copyWith(status: AuthStatus.loading, errorMessage: null));
+    emit(
+      state.copyWith(
+        status: AuthStatus.unauthenticated,
+        isSubmitting: true,
+        clearError: true,
+      ),
+    );
     try {
       final user = await _authRepository.register(
         name: name,
@@ -55,7 +86,21 @@ class AuthCubit extends Cubit<AuthState> {
       );
       emit(AuthState(status: AuthStatus.authenticated, user: user));
     } on AuthFailure catch (e) {
-      emit(AuthState(status: AuthStatus.failure, errorMessage: e.message));
+      emit(
+        state.copyWith(
+          status: AuthStatus.unauthenticated,
+          isSubmitting: false,
+          errorMessage: e.message,
+        ),
+      );
+    } catch (_) {
+      emit(
+        state.copyWith(
+          status: AuthStatus.unauthenticated,
+          isSubmitting: false,
+          errorMessage: 'Something went wrong. Please try again.',
+        ),
+      );
     }
   }
 

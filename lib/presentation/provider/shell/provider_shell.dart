@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:localservicemarket/domain/entities/user.dart';
+import 'package:localservicemarket/presentation/chat/conversations_page.dart';
 import 'package:localservicemarket/presentation/profile/profile_page.dart';
 import 'package:localservicemarket/presentation/provider/dashboard/provider_dashboard_page.dart';
 import 'package:localservicemarket/presentation/provider/requests/incoming_requests_page.dart';
@@ -16,13 +17,14 @@ class ProviderShell extends StatefulWidget {
 class _ProviderShellState extends State<ProviderShell> {
   int _index = 0;
 
-  static const _titles = ['Overview', 'Requests', 'Profile'];
+  static const _titles = ['Overview', 'Requests', 'Messages', 'Profile'];
 
   @override
   Widget build(BuildContext context) {
     final pages = [
       ProviderDashboardPage(provider: widget.provider),
       IncomingRequestsPage(provider: widget.provider),
+      ConversationsPage(user: widget.provider),
       ProfilePage(user: widget.provider),
     ];
 
@@ -44,7 +46,7 @@ class _ProviderShellState extends State<ProviderShell> {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   Text(
-                    _index == 2 ? widget.provider.name : _titles[_index],
+                    _index == 3 ? widget.provider.name : _titles[_index],
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ],
@@ -78,6 +80,11 @@ class _ProviderShellState extends State<ProviderShell> {
               icon: Icon(Icons.inbox_outlined),
               selectedIcon: Icon(Icons.inbox_rounded),
               label: 'Requests',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.chat_bubble_outline_rounded),
+              selectedIcon: Icon(Icons.chat_bubble_rounded),
+              label: 'Chat',
             ),
             NavigationDestination(
               icon: Icon(Icons.person_outline_rounded),

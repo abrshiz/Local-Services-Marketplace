@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:localservicemarket/core/theme/app_colors.dart';
+import 'package:localservicemarket/core/widgets/app_card.dart';
+import 'package:localservicemarket/core/widgets/section_header.dart';
 import 'package:localservicemarket/core/widgets/status_chip.dart';
 import 'package:localservicemarket/domain/entities/user.dart';
 import 'package:localservicemarket/domain/enums/booking_status.dart';
@@ -32,22 +35,26 @@ class _ProviderDashboardPageState extends State<ProviderDashboardPage> {
       builder: (context, state) {
         if (state.status == ProviderDashStatus.loading &&
             state.allBookings.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.primary),
+          );
         }
 
         return RefreshIndicator(
+          color: AppColors.primary,
           onRefresh: () =>
               context.read<ProviderDashboardCubit>().load(widget.provider.userId),
           child: ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
             children: [
               Row(
                 children: [
                   Expanded(
                     child: _StatCard(
-                      label: 'Earnings',
+                      label: 'Total earnings',
                       value: '\$${state.earnings.toStringAsFixed(0)}',
-                      icon: Icons.payments_outlined,
+                      icon: Icons.account_balance_wallet_rounded,
+                      color: AppColors.primary,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -55,17 +62,15 @@ class _ProviderDashboardPageState extends State<ProviderDashboardPage> {
                     child: _StatCard(
                       label: 'Pending',
                       value: '${state.pending.length}',
-                      icon: Icons.pending_actions,
+                      icon: Icons.hourglass_top_rounded,
+                      color: AppColors.warning,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              Text(
-                'Calendar',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              Card(
+              const SectionHeader(title: 'Schedule'),
+              AppCard(
+                padding: const EdgeInsets.all(8),
                 child: TableCalendar(
                   firstDay: DateTime.now().subtract(const Duration(days: 30)),
                   lastDay: DateTime.now().add(const Duration(days: 90)),
@@ -82,55 +87,79 @@ class _ProviderDashboardPageState extends State<ProviderDashboardPage> {
                   },
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Slots on ${DateFormat.MMMd().format(_selectedDay)}',
-                style: Theme.of(context).textTheme.titleSmall,
+              Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 4),
+                child: Text(
+                  DateFormat.MMMd().format(_selectedDay),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
               ),
               ...state.slots.map(
-                (s) => ListTile(
-                  dense: true,
-                  leading: Icon(
-                    s.isAvailable ? Icons.event_available : Icons.event_busy,
-                    color: s.isAvailable ? Colors.green : Colors.grey,
-                  ),
-                  title: Text(
-                    '${DateFormat.jm().format(s.startTime.toLocal())} – '
-                    '${DateFormat.jm().format(s.endTime.toLocal())}',
+                (s) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: AppCard(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          s.isAvailable
+                              ? Icons.event_available_rounded
+                              : Icons.event_busy_rounded,
+                          color: s.isAvailable
+                              ? AppColors.success
+                              : AppColors.textMuted,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          '${DateFormat.jm().format(s.startTime.toLocal())} – '
+                          '${DateFormat.jm().format(s.endTime.toLocal())}',
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              Text(
-                'Active jobs',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              const SectionHeader(title: 'Active jobs'),
               ...state.allBookings
                   .where((b) =>
                       b.status == BookingStatus.confirmed ||
                       (b.serviceStartedAt != null &&
                           b.status != BookingStatus.completed))
-                  .map((b) => Card(
-                        margin: const EdgeInsets.only(bottom: 8),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
+                  .map((b) => Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: AppCard(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              ListTile(
-                                contentPadding: EdgeInsets.zero,
-                                title: Text(
-                                  DateFormat.jm()
-                                      .format(b.scheduledTime.toLocal()),
-                                ),
-                                trailing: StatusChip(status: b.status),
-                                subtitle: b.serviceStartedAt == null
-                                    ? const Text('Not started')
-                                    : const Text('In progress'),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      DateFormat.jm()
+                                          .format(b.scheduledTime.toLocal()),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                  StatusChip(status: b.status),
+                                ],
                               ),
+                              const SizedBox(height: 4),
+                              Text(
+                                b.serviceStartedAt == null
+                                    ? 'Ready to start'
+                                    : 'Service in progress',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              const SizedBox(height: 12),
                               if (b.status == BookingStatus.confirmed &&
                                   b.serviceStartedAt == null)
-                                OutlinedButton(
+                                FilledButton(
                                   onPressed: () => context
                                       .read<ProviderDashboardCubit>()
                                       .startService(b.bookingId),
@@ -142,7 +171,7 @@ class _ProviderDashboardPageState extends State<ProviderDashboardPage> {
                                   onPressed: () => context
                                       .read<ProviderDashboardCubit>()
                                       .completeService(b.bookingId),
-                                  child: const Text('Complete service'),
+                                  child: const Text('Mark complete'),
                                 ),
                             ],
                           ),
@@ -161,31 +190,37 @@ class _StatCard extends StatelessWidget {
     required this.label,
     required this.value,
     required this.icon,
+    required this.color,
   });
 
   final String label;
   final String value;
   final IconData icon;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: Theme.of(context).colorScheme.primary),
-            const SizedBox(height: 8),
-            Text(label, style: Theme.of(context).textTheme.bodySmall),
-            Text(
-              value,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(10),
             ),
-          ],
-        ),
+            child: Icon(icon, color: color, size: 22),
+          ),
+          const SizedBox(height: 12),
+          Text(label, style: Theme.of(context).textTheme.bodySmall),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+          ),
+        ],
       ),
     );
   }

@@ -44,6 +44,57 @@ class MockApiDataSource implements ApiDataSource {
     _notifyPending();
   }
 
+  void _addProviderCatalog(
+    String providerId,
+    String providerName,
+    List<String> categoryIds,
+  ) {
+    final cats = (_store()['categories'] as List).cast<Map<String, dynamic>>();
+    final services = (_store()['services'] as List).cast<Map<String, dynamic>>();
+    final slots = (_store()['slots'] as List).cast<Map<String, dynamic>>();
+    final now = DateTime.now().toUtc();
+
+    for (final catId in categoryIds) {
+      Map<String, dynamic>? cat;
+      for (final c in cats) {
+        if (c['categoryId'] == catId) {
+          cat = c;
+          break;
+        }
+      }
+      if (cat == null) continue;
+      services.add(
+        ServiceModel(
+          serviceId: _uuid.v4(),
+          providerId: providerId,
+          categoryId: catId,
+          title: '$providerName — ${cat['name']}',
+          description:
+              'Professional ${(cat['name'] as String).toLowerCase()} services',
+          priceType: PriceType.fixed,
+          basePrice: 85,
+        ).toJson(),
+      );
+    }
+
+    for (var d = 0; d < 14; d++) {
+      final day = DateTime(now.year, now.month, now.day + d);
+      for (final hour in [9, 11, 14, 16]) {
+        final start = DateTime(day.year, day.month, day.day, hour);
+        if (start.isBefore(now.subtract(const Duration(hours: 1)))) continue;
+        slots.add(
+          TimeSlotModel(
+            slotId: _uuid.v4(),
+            providerId: providerId,
+            startTime: start,
+            endTime: start.add(const Duration(hours: 2)),
+            isAvailable: true,
+          ).toJson(),
+        );
+      }
+    }
+  }
+
   void _notifyPending() {
     final bookings = (_store()['bookings'] as List).cast<Map<String, dynamic>>();
     final byProvider = <String, List<Map<String, dynamic>>>{};
@@ -250,8 +301,12 @@ class MockApiDataSource implements ApiDataSource {
     required String phone,
     required UserRole role,
     String? bio,
+    List<String> categoryIds = const [],
   }) async {
     await ensureInitialized();
+    if (role == UserRole.provider && categoryIds.isEmpty) {
+      throw AuthException('Select at least one work category');
+    }
     final users = (_store()['users'] as List).cast<Map<String, dynamic>>();
     if (users.any((u) => u['email'] == email.trim().toLowerCase())) {
       throw AuthException('Email already registered');
@@ -269,15 +324,25 @@ class MockApiDataSource implements ApiDataSource {
       'updatedAt': now.toIso8601String(),
     };
     if (role == UserRole.provider) {
+      final cats = (_store()['categories'] as List).cast<Map<String, dynamic>>();
+      final skills = <Map<String, dynamic>>[];
+      for (final catId in categoryIds) {
+        final cat = cats.cast<Map<String, dynamic>?>().firstWhere(
+              (c) => c!['categoryId'] == catId,
+              orElse: () => null,
+            );
+        if (cat != null) skills.add(Map<String, dynamic>.from(cat));
+      }
       user.addAll({
         'bio': bio ?? '',
-        'skills': [],
+        'skills': skills,
         'averageRating': 0,
         'isVerified': false,
         'isActive': true,
         'latitude': 37.7749,
         'longitude': -122.4194,
       });
+      _addProviderCatalog(id, name, categoryIds);
     } else {
       user.addAll({
         'savedAddresses': [],
@@ -328,7 +393,7 @@ class MockApiDataSource implements ApiDataSource {
   Future<List<Map<String, dynamic>>> getNearbyProviders({
     required double latitude,
     required double longitude,
-    double radiusKm = 25,
+    double radiusKm = 10000,
     String? categoryId,
     double? minRating,
     PriceType? priceType,

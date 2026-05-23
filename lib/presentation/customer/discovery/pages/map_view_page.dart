@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:localservicemarket/core/theme/app_colors.dart';
+import 'package:localservicemarket/core/widgets/app_card.dart';
 import 'package:localservicemarket/domain/entities/user.dart';
 import 'package:localservicemarket/presentation/customer/discovery/bloc/discovery_cubit.dart';
 import 'package:localservicemarket/presentation/customer/discovery/bloc/discovery_state.dart';
@@ -22,36 +24,55 @@ class MapViewPage extends StatelessWidget {
                 position: LatLng(p.latitude, p.longitude),
                 infoWindow: InfoWindow(
                   title: p.name,
-                  snippet: '${p.averageRating} ★',
+                  snippet: '${p.averageRating} ★ rating',
                 ),
               ),
             )
             .toSet();
 
-        return Stack(
-          children: [
-            GoogleMap(
-              initialCameraPosition: CameraPosition(target: center, zoom: 13),
-              markers: markers,
-              myLocationEnabled: true,
-              myLocationButtonEnabled: true,
-              onMapCreated: (_) {},
-            ),
-            Positioned(
-              top: 12,
-              left: 12,
-              right: 12,
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(
-                    '${state.providers.length} providers within 25 km',
-                    style: Theme.of(context).textTheme.titleSmall,
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Stack(
+              children: [
+                GoogleMap(
+                  initialCameraPosition: CameraPosition(target: center, zoom: 13),
+                  markers: markers,
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: true,
+                  zoomControlsEnabled: false,
+                  onMapCreated: (_) {},
+                ),
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  right: 12,
+                  child: AppCard(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.place_rounded, color: AppColors.primary),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            '${state.providers.length} providers nearby',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );

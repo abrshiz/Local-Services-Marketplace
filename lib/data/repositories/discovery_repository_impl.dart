@@ -43,7 +43,7 @@ class DiscoveryRepositoryImpl implements DiscoveryRepository {
   Future<List<ServiceProvider>> getNearbyProviders({
     required double latitude,
     required double longitude,
-    double radiusKm = 25,
+    double radiusKm = 10000,
     String? categoryId,
     double? minRating,
     PriceType? priceType,

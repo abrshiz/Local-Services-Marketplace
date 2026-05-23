@@ -1,14 +1,20 @@
 import 'package:dio/dio.dart';
+import 'package:get_it/get_it.dart';
 import 'package:localservicemarket/core/config/app_config.dart';
+import 'package:localservicemarket/core/error/exceptions.dart';
+import 'package:localservicemarket/core/network/connectivity_cubit.dart';
 import 'package:localservicemarket/data/datasources/local/local_cache.dart';
 
 Dio createApiClient(LocalCache cache) {
   final dio = Dio(
     BaseOptions(
       baseUrl: AppConfig.apiBaseUrl,
-      connectTimeout: const Duration(seconds: 15),
-      receiveTimeout: const Duration(seconds: 30),
-      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      connectTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 90),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
     ),
   );
 
@@ -21,6 +27,22 @@ Dio createApiClient(LocalCache cache) {
         }
         handler.next(options);
       },
+      onError: (error, handler) {
+        if (isNetworkDioError(error)) {
+          if (GetIt.I.isRegistered<ConnectivityCubit>()) {
+            GetIt.I<ConnectivityCubit>().reportNetworkFailure();
+          }
+          handler.reject(
+            DioException(
+              requestOptions: error.requestOptions,
+              error: NetworkException(),
+              type: error.type,
+            ),
+          );
+          return;
+        }
+        handler.next(error);
+      },
     ),
   );
 
@@ -28,9 +50,12 @@ Dio createApiClient(LocalCache cache) {
 }
 
 Never throwApiException(DioException e) {
+  if (isNetworkDioError(e)) {
+    throw NetworkException();
+  }
   final data = e.response?.data;
   if (data is Map && data['error'] is String) {
     throw Exception(data['error'] as String);
   }
-  throw Exception(e.message ?? 'Network error');
+  throw Exception(e.message ?? 'Something went wrong');
 }

@@ -45,6 +45,10 @@ class RemoteApiDataSource implements ApiDataSource {
         final msg = (e.response?.data as Map?)?['error'] as String?;
         throw AuthException(msg ?? 'Conflict');
       }
+      if (e.response?.statusCode == 400) {
+        final msg = (e.response?.data as Map?)?['error'] as String?;
+        throw AuthException(msg ?? 'Invalid request');
+      }
       if (e.response?.statusCode == 402) {
         throw PaymentException(
           (e.response?.data as Map?)?['error'] as String? ?? 'Payment failed',
@@ -91,6 +95,7 @@ class RemoteApiDataSource implements ApiDataSource {
     required String phone,
     required UserRole role,
     String? bio,
+    List<String> categoryIds = const [],
   }) async {
     final res = await _post<Map<String, dynamic>>(
       '$_api/auth/register',
@@ -101,6 +106,7 @@ class RemoteApiDataSource implements ApiDataSource {
         'phone': phone,
         'role': role.wireValue,
         'bio': bio,
+        if (role == UserRole.provider) 'categoryIds': categoryIds,
       },
     );
     final token = res['token'] as String?;
@@ -153,7 +159,7 @@ class RemoteApiDataSource implements ApiDataSource {
   Future<List<Map<String, dynamic>>> getNearbyProviders({
     required double latitude,
     required double longitude,
-    double radiusKm = 25,
+    double radiusKm = 10000,
     String? categoryId,
     double? minRating,
     PriceType? priceType,

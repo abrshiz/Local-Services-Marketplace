@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:localservicemarket/core/theme/app_colors.dart';
+import 'package:localservicemarket/core/widgets/app_card.dart';
+import 'package:localservicemarket/core/widgets/empty_state.dart';
+import 'package:localservicemarket/core/widgets/section_header.dart';
 import 'package:localservicemarket/core/widgets/status_chip.dart';
 import 'package:localservicemarket/domain/entities/booking.dart';
 import 'package:localservicemarket/domain/entities/user.dart';
@@ -29,34 +33,34 @@ class _TrackingPageState extends State<TrackingPage> {
     return BlocBuilder<TrackingCubit, TrackingState>(
       builder: (context, state) {
         if (state.status == TrackingStatus.loading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.primary),
+          );
         }
         if (state.bookings.isEmpty) {
-          return const Center(child: Text('No bookings yet'));
+          return const EmptyState(
+            icon: Icons.calendar_month_outlined,
+            title: 'No bookings yet',
+            subtitle: 'Discover services and book your first appointment.',
+          );
         }
 
-        final active = context.read<TrackingCubit>().activeBooking(state.bookings);
+        final active =
+            context.read<TrackingCubit>().activeBooking(state.bookings);
 
         return RefreshIndicator(
+          color: AppColors.primary,
           onRefresh: () =>
               context.read<TrackingCubit>().load(widget.customer.userId),
           child: ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
             children: [
               if (active != null) ...[
-                Text(
-                  'Live status',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
+                const SectionHeader(title: 'Live tracking'),
                 _LiveTrackingCard(booking: active),
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
               ],
-              Text(
-                'All bookings',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
+              const SectionHeader(title: 'All bookings'),
               ...state.bookings.map(
                 (b) => _BookingTile(
                   booking: b,
@@ -64,6 +68,7 @@ class _TrackingPageState extends State<TrackingPage> {
                       ? () => showModalBottomSheet<void>(
                             context: context,
                             isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
                             builder: (_) => ReviewSheet(
                               booking: b,
                               customer: widget.customer,
@@ -98,37 +103,71 @@ class _LiveTrackingCard extends StatelessWidget {
       ('Completed', booking.status == BookingStatus.completed),
     ];
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.radar, color: Colors.blue),
-                const SizedBox(width: 8),
-                Text(
-                  'Service tracking',
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryLight,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.radar_rounded,
+                  color: AppColors.primary,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Service in progress',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const Spacer(),
-                StatusChip(status: booking.status),
-              ],
-            ),
-            const SizedBox(height: 16),
-            ...steps.map(
-              (s) => ListTile(
-                dense: true,
-                leading: Icon(
-                  s.$2 ? Icons.check_circle : Icons.radio_button_unchecked,
-                  color: s.$2 ? Colors.green : Colors.grey,
-                ),
-                title: Text(s.$1),
               ),
-            ),
-          ],
-        ),
+              StatusChip(status: booking.status),
+            ],
+          ),
+          const SizedBox(height: 20),
+          ...steps.asMap().entries.map((e) {
+            final done = e.value.$2;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                children: [
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: done ? AppColors.success : AppColors.background,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: done ? AppColors.success : AppColors.border,
+                      ),
+                    ),
+                    child: Icon(
+                      done ? Icons.check_rounded : Icons.circle,
+                      size: 16,
+                      color: done ? Colors.white : AppColors.textMuted,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    e.value.$1,
+                    style: TextStyle(
+                      fontWeight: done ? FontWeight.w600 : FontWeight.w500,
+                      color: done
+                          ? AppColors.textPrimary
+                          : AppColors.textMuted,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
       ),
     );
   }
@@ -142,14 +181,54 @@ class _BookingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fmt = DateFormat.yMMMd().add_jm();
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ListTile(
-        title: Text(fmt.format(booking.scheduledTime.toLocal())),
-        subtitle: Text('\$${booking.totalPrice.toStringAsFixed(0)}'),
-        trailing: StatusChip(status: booking.status),
+    final fmt = DateFormat.MMMd().add_jm();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: AppCard(
         onTap: onReview,
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.event_available_rounded,
+                color: AppColors.primary,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    fmt.format(booking.scheduledTime.toLocal()),
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    '\$${booking.totalPrice.toStringAsFixed(0)}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  if (onReview != null)
+                    const Text(
+                      'Tap to leave a review',
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            StatusChip(status: booking.status),
+          ],
+        ),
       ),
     );
   }

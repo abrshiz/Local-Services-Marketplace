@@ -20,12 +20,12 @@ flutter pub get
 flutter run
 ```
 
-The app talks to `http://localhost:3000` (iOS/desktop) or `http://10.0.2.2:3000` (Android emulator) by default.
+The app defaults to the production API: **https://localservicemarket-api.onrender.com**
 
-Override the base URL:
+Local backend during development:
 
 ```bash
-flutter run --dart-define=API_BASE_URL=http://192.168.1.10:3000
+flutter run --dart-define=API_BASE_URL=http://10.0.2.2:3000
 ```
 
 Use the offline mock store instead of the API:
@@ -58,6 +58,6 @@ backend/      REST API — Express, SQLite, JWT auth
 
 All protected routes use `Authorization: Bearer <token>`.
 
-## Google Maps
+## Google Maps (Android)
 
-Add your API key in `android/app/src/main/AndroidManifest.xml` for the Map tab.
+The Maps SDK key is configured in `android/app/src/main/AndroidManifest.xml`. In [Google Cloud Console](https://console.cloud.google.com/), enable **Maps SDK for Android** and restrict the key to your app package: `com.localservicemarket.localservicemarket`.

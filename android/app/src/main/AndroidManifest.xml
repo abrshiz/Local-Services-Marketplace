@@ -3,9 +3,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="localservicemarket"
+        android:label="LocalServe"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
@@ -34,10 +35,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <!-- Replace with your Google Maps API key for Android -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_GOOGLE_MAPS_API_KEY" />
+            android:value="AIzaSyCmIdUv3rIRs9RX81paa13skR_ZWc5RVaY" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

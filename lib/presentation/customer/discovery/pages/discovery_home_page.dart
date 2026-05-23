@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localservicemarket/core/theme/app_colors.dart';
+import 'package:localservicemarket/core/widgets/app_card.dart';
+import 'package:localservicemarket/core/widgets/section_header.dart';
 import 'package:localservicemarket/core/widgets/shimmer_box.dart';
 import 'package:localservicemarket/domain/entities/user.dart';
 import 'package:localservicemarket/domain/enums/price_type.dart';
@@ -27,14 +30,24 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
   IconData _iconFor(String iconUrl) {
     switch (iconUrl) {
       case 'plumbing':
-        return Icons.plumbing;
+        return Icons.plumbing_rounded;
       case 'electrical_services':
-        return Icons.electrical_services;
+        return Icons.electrical_services_rounded;
       case 'yard':
-        return Icons.yard;
+        return Icons.yard_rounded;
       default:
-        return Icons.cleaning_services;
+        return Icons.cleaning_services_rounded;
     }
+  }
+
+  Color _accentFor(int index) {
+    const colors = [
+      AppColors.primary,
+      AppColors.accent,
+      Color(0xFF8B5CF6),
+      Color(0xFFF97316),
+    ];
+    return colors[index % colors.length];
   }
 
   @override
@@ -44,26 +57,39 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
         if (state.status == DiscoveryStatus.loading &&
             state.categories.isEmpty) {
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             children: const [
-              ShimmerBox(height: 48),
-              SizedBox(height: 16),
-              ShimmerBox(height: 120),
+              ShimmerBox(height: 52, borderRadius: 14),
+              SizedBox(height: 20),
+              ShimmerBox(height: 100),
               SizedBox(height: 12),
-              ShimmerBox(height: 120),
+              ShimmerBox(height: 100),
             ],
           );
         }
 
         return RefreshIndicator(
+          color: AppColors.primary,
           onRefresh: () => context.read<DiscoveryCubit>().load(),
           child: CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
                   child: SearchBar(
-                    hintText: 'Search providers or services',
+                    hintText: 'Search services or providers…',
+                    hintStyle: WidgetStatePropertyAll(
+                      TextStyle(color: AppColors.textMuted),
+                    ),
+                    backgroundColor:
+                        WidgetStatePropertyAll(AppColors.surface),
+                    elevation: WidgetStatePropertyAll(0),
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        side: const BorderSide(color: AppColors.border),
+                      ),
+                    ),
                     onSubmitted: (q) {
                       context.read<DiscoveryCubit>().setQuery(q);
                       Navigator.push(
@@ -76,9 +102,13 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                         ),
                       );
                     },
+                    leading: const Icon(
+                      Icons.search_rounded,
+                      color: AppColors.textMuted,
+                    ),
                     trailing: [
                       IconButton(
-                        icon: const Icon(Icons.tune),
+                        icon: const Icon(Icons.tune_rounded),
                         onPressed: () => _showFilters(context, state),
                       ),
                     ],
@@ -86,58 +116,58 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                 ),
               ),
               SliverPadding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                 sliver: SliverToBoxAdapter(
-                  child: Text(
-                    'Categories',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
+                  child: SectionHeader(title: 'Categories'),
                 ),
               ),
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 sliver: SliverGrid(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: 12,
                     crossAxisSpacing: 12,
-                    childAspectRatio: 1.4,
+                    childAspectRatio: 1.15,
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, i) {
                       final cat = state.categories[i];
-                      final selected = state.selectedCategoryId == cat.categoryId;
-                      return Card(
-                        color: selected
-                            ? Theme.of(context).colorScheme.primaryContainer
-                            : null,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(16),
-                          onTap: () => context.read<DiscoveryCubit>().setCategory(
-                                selected ? null : cat.categoryId,
-                              ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Icon(_iconFor(cat.iconUrl), size: 28),
-                                const Spacer(),
-                                Text(
-                                  cat.name,
-                                  style: const TextStyle(fontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  cat.description,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                              ],
+                      final selected =
+                          state.selectedCategoryId == cat.categoryId;
+                      final accent = _accentFor(i);
+                      return AppCard(
+                        padding: const EdgeInsets.all(14),
+                        color: selected ? AppColors.primaryLight : null,
+                        onTap: () => context.read<DiscoveryCubit>().setCategory(
+                              selected ? null : cat.categoryId,
                             ),
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: accent.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(_iconFor(cat.iconUrl), color: accent),
+                            ),
+                            const Spacer(),
+                            Text(
+                              cat.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 15,
+                              ),
+                            ),
+                            Text(
+                              cat.description,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
                         ),
                       );
                     },
@@ -146,13 +176,11 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                 ),
               ),
               SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
                 sliver: SliverToBoxAdapter(
-                  child: Text(
-                    'Nearby providers',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                  child: SectionHeader(
+                    title: 'Nearby providers',
+                    actionLabel: '${state.providers.length} found',
                   ),
                 ),
               ),
@@ -163,20 +191,12 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                     final services = state.services
                         .where((s) => s.providerId == provider.userId)
                         .toList();
-                    return Card(
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          child: Text(provider.name[0]),
-                        ),
-                        title: Text(provider.name),
-                        subtitle: Text(
-                          '${provider.averageRating.toStringAsFixed(1)} ★ · '
-                          '${provider.skills.map((s) => s.name).join(', ')}',
-                        ),
-                        trailing: provider.isVerified
-                            ? const Icon(Icons.verified, color: Colors.blue)
-                            : null,
+                    final price = services.isNotEmpty
+                        ? services.first.basePrice
+                        : null;
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                      child: AppCard(
                         onTap: services.isEmpty
                             ? null
                             : () => Navigator.push(
@@ -189,13 +209,106 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                                     ),
                                   ),
                                 ),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 28,
+                              backgroundColor: AppColors.primaryLight,
+                              child: Text(
+                                provider.name[0].toUpperCase(),
+                                style: const TextStyle(
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          provider.name,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                      if (provider.isVerified)
+                                        const Icon(
+                                          Icons.verified_rounded,
+                                          color: AppColors.accent,
+                                          size: 18,
+                                        ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.star_rounded,
+                                        size: 16,
+                                        color: Color(0xFFFBBF24),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        provider.averageRating
+                                            .toStringAsFixed(1),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          provider.skills
+                                              .map((s) => s.name)
+                                              .join(' · '),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (price != null)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.background,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  '\$${price.toStringAsFixed(0)}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                     );
                   },
                   childCount: state.providers.length,
                 ),
               ),
-              const SliverToBoxAdapter(child: SizedBox(height: 80)),
+              const SliverToBoxAdapter(child: SizedBox(height: 24)),
             ],
           ),
         );
@@ -212,20 +325,26 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
         return StatefulBuilder(
           builder: (context, setModal) {
             return Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text('Filters', style: Theme.of(context).textTheme.titleLarge),
-                  const SizedBox(height: 16),
-                  Text('Min rating: ${minRating.toStringAsFixed(1)}'),
+                  Text(
+                    'Filters',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Minimum rating · ${minRating.toStringAsFixed(1)}',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                   Slider(
                     value: minRating,
                     min: 0,
                     max: 5,
                     divisions: 10,
-                    label: minRating.toStringAsFixed(1),
+                    activeColor: AppColors.primary,
                     onChanged: (v) => setModal(() => minRating = v),
                   ),
                   DropdownButtonFormField<PriceType?>(
@@ -235,7 +354,7 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                       DropdownMenuItem(value: null, child: Text('Any')),
                       DropdownMenuItem(
                         value: PriceType.fixed,
-                        child: Text('Fixed'),
+                        child: Text('Fixed price'),
                       ),
                       DropdownMenuItem(
                         value: PriceType.hourly,
@@ -244,7 +363,7 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                     ],
                     onChanged: (v) => setModal(() => priceType = v),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
                   FilledButton(
                     onPressed: () {
                       context.read<DiscoveryCubit>().setFilters(
@@ -253,7 +372,7 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                           );
                       Navigator.pop(ctx);
                     },
-                    child: const Text('Apply'),
+                    child: const Text('Apply filters'),
                   ),
                 ],
               ),

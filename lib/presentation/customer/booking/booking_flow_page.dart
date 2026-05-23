@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:localservicemarket/core/di/injection.dart';
+import 'package:localservicemarket/core/theme/app_colors.dart';
+import 'package:localservicemarket/core/widgets/app_card.dart';
+import 'package:localservicemarket/core/widgets/section_header.dart';
 import 'package:localservicemarket/domain/entities/service.dart';
 import 'package:localservicemarket/domain/entities/user.dart';
 import 'package:localservicemarket/presentation/customer/booking/bloc/booking_cubit.dart';
@@ -97,22 +100,57 @@ class _BookingFlowPageState extends State<BookingFlowPage> {
         },
         builder: (context, state) {
           return Scaffold(
+            backgroundColor: AppColors.background,
             appBar: AppBar(title: const Text('Book service')),
             body: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               children: [
-                Card(
-                  child: ListTile(
-                    title: Text(widget.service.title),
-                    subtitle: Text(widget.provider.name),
-                    trailing: Text(
-                      '\$${widget.service.basePrice.toStringAsFixed(0)}',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
+                AppCard(
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryLight,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.handyman_rounded,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.service.title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text(widget.provider.name),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        '\$${widget.service.basePrice.toStringAsFixed(0)}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.primary,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 16),
-                TableCalendar(
+                const SizedBox(height: 20),
+                const SectionHeader(title: 'Pick a date'),
+                AppCard(
+                  padding: const EdgeInsets.all(8),
+                  child: TableCalendar(
                   firstDay: DateTime.now(),
                   lastDay: DateTime.now().add(const Duration(days: 60)),
                   focusedDay: _focusedDay,
@@ -127,15 +165,14 @@ class _BookingFlowPageState extends State<BookingFlowPage> {
                           day: selected,
                         );
                   },
+                  ),
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  'Available slots',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+                const SectionHeader(title: 'Time slots'),
                 const SizedBox(height: 8),
                 if (state.status == CustomerBookingStatus.loading)
-                  const Center(child: CircularProgressIndicator())
+                  const Center(
+                    child: CircularProgressIndicator(color: AppColors.primary),
+                  )
                 else if (state.slots.isEmpty)
                   const Text('No slots for this day')
                 else
@@ -163,11 +200,15 @@ class _BookingFlowPageState extends State<BookingFlowPage> {
                   maxLines: 3,
                   onChanged: context.read<BookingCubit>().setNotes,
                 ),
-                SwitchListTile(
-                  title: const Text('Pay online (card)'),
-                  subtitle: const Text('Off = cash — awaits provider accept'),
-                  value: _payOnline,
-                  onChanged: (v) => setState(() => _payOnline = v),
+                AppCard(
+                  padding: EdgeInsets.zero,
+                  child: SwitchListTile(
+                    title: const Text('Pay online'),
+                    subtitle: const Text('Card · instant confirmation'),
+                    value: _payOnline,
+                    activeThumbColor: AppColors.primary,
+                    onChanged: (v) => setState(() => _payOnline = v),
+                  ),
                 ),
                 const SizedBox(height: 24),
                 FilledButton(

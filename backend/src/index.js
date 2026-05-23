@@ -13,6 +13,7 @@ import {
   mapSlot,
   mapUser,
 } from './userMapper.js';
+import { setupProviderCategories } from './providerSetup.js';
 
 initSchema();
 
@@ -43,7 +44,7 @@ app.post('/api/v1/auth/login', (req, res) => {
 });
 
 app.post('/api/v1/auth/register', (req, res) => {
-  const { name, email, password, phone, role, bio } = req.body;
+  const { name, email, password, phone, role, bio, categoryIds } = req.body;
   const normalized = String(email || '').trim().toLowerCase();
   const exists = db.prepare('SELECT 1 FROM users WHERE email = ?').get(normalized);
   if (exists) return res.status(409).json({ error: 'Email already registered' });
@@ -52,6 +53,13 @@ app.post('/api/v1/auth/register', (req, res) => {
   const now = new Date().toISOString();
   const hash = bcrypt.hashSync(password || '', 10);
   const userRole = role === 'PROVIDER' ? 'PROVIDER' : 'CUSTOMER';
+
+  if (userRole === 'PROVIDER') {
+    const ids = Array.isArray(categoryIds) ? categoryIds : [];
+    if (ids.length === 0) {
+      return res.status(400).json({ error: 'Select at least one work category' });
+    }
+  }
 
   db.prepare(`
     INSERT INTO users (user_id, name, email, password_hash, phone, role, created_at, updated_at,
@@ -70,6 +78,10 @@ app.post('/api/v1/auth/register', (req, res) => {
     userRole === 'PROVIDER' ? 37.7749 : null,
     userRole === 'PROVIDER' ? -122.4194 : null,
   );
+
+  if (userRole === 'PROVIDER') {
+    setupProviderCategories(db, userId, name, categoryIds);
+  }
 
   const token = signToken(userId);
   res.status(201).json({ token, user: mapUser(userId) });
@@ -107,7 +119,7 @@ app.get('/api/v1/services', (req, res) => {
 app.get('/api/v1/providers/nearby', (req, res) => {
   const lat = parseFloat(req.query.latitude);
   const lng = parseFloat(req.query.longitude);
-  const radiusKm = parseFloat(req.query.radiusKm || '25');
+  const radiusKm = parseFloat(req.query.radiusKm || '10000');
   const categoryId = req.query.categoryId;
   const minRating = parseFloat(req.query.minRating || '0');
   const priceType = req.query.priceType;
@@ -122,12 +134,15 @@ app.get('/api/v1/providers/nearby', (req, res) => {
     providers = providers.filter((p) => p.name.toLowerCase().includes(query));
   }
   if (categoryId) {
-    const providerIds = new Set(
-      db
-        .prepare('SELECT provider_id FROM services WHERE category_id = ? AND is_active = 1')
-        .all(categoryId)
-        .map((r) => r.provider_id),
-    );
+    const fromServices = db
+      .prepare('SELECT provider_id FROM services WHERE category_id = ? AND is_active = 1')
+      .all(categoryId)
+      .map((r) => r.provider_id);
+    const fromSkills = db
+      .prepare('SELECT provider_id FROM provider_skills WHERE category_id = ?')
+      .all(categoryId)
+      .map((r) => r.provider_id);
+    const providerIds = new Set([...fromServices, ...fromSkills]);
     providers = providers.filter((p) => providerIds.has(p.userId));
   }
   if (minRating > 0) {

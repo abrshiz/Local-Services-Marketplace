@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:localservicemarket/core/config/app_config.dart';
+import 'package:localservicemarket/core/network/connectivity_cubit.dart';
+import 'package:localservicemarket/core/theme/theme_cubit.dart';
 import 'package:localservicemarket/data/datasources/local/local_cache.dart';
 import 'package:localservicemarket/data/datasources/remote/api_client.dart';
 import 'package:localservicemarket/data/datasources/remote/api_data_source.dart';
@@ -32,6 +34,8 @@ final sl = GetIt.instance;
 Future<void> configureDependencies() async {
   final prefs = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => LocalCache(prefs));
+  sl.registerLazySingleton(ConnectivityCubit.new);
+  sl.registerLazySingleton(() => ThemeCubit(prefs));
 
   if (!AppConfig.useMockApi) {
     sl.registerLazySingleton(() => createApiClient(sl()));

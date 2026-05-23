@@ -15,6 +15,7 @@ abstract class ApiDataSource {
     required String phone,
     required UserRole role,
     String? bio,
+    List<String> categoryIds = const [],
   });
   Future<Map<String, dynamic>?> currentUser();
   Future<void> logout();

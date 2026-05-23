@@ -32,3 +32,8 @@ class ProviderUnavailableException implements Exception {
   ProviderUnavailableException(this.message);
   final String message;
 }
+
+class NetworkException implements Exception {
+  NetworkException([this.message = 'Please Connect to Internet']);
+  final String message;
+}

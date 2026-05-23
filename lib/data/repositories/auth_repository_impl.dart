@@ -31,6 +31,8 @@ class AuthRepositoryImpl implements AuthRepository {
       return UserModel.fromJson(json);
     } on AuthException catch (e) {
       throw AuthFailure(e.message);
+    } on NetworkException catch (e) {
+      throw AuthFailure(e.message);
     }
   }
 
@@ -42,6 +44,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String phone,
     required UserRole role,
     String? bio,
+    List<String> categoryIds = const [],
   }) async {
     try {
       final json = await _api.register(
@@ -51,9 +54,12 @@ class AuthRepositoryImpl implements AuthRepository {
         phone: phone,
         role: role,
         bio: bio,
+        categoryIds: categoryIds,
       );
       return UserModel.fromJson(json);
     } on AuthException catch (e) {
+      throw AuthFailure(e.message);
+    } on NetworkException catch (e) {
       throw AuthFailure(e.message);
     }
   }

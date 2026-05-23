@@ -40,6 +40,7 @@ class AuthCubit extends Cubit<AuthState> {
     required String phone,
     required UserRole role,
     String? bio,
+    List<String> categoryIds = const [],
   }) async {
     emit(state.copyWith(status: AuthStatus.loading, errorMessage: null));
     try {
@@ -50,6 +51,7 @@ class AuthCubit extends Cubit<AuthState> {
         phone: phone,
         role: role,
         bio: bio,
+        categoryIds: categoryIds,
       );
       emit(AuthState(status: AuthStatus.authenticated, user: user));
     } on AuthFailure catch (e) {

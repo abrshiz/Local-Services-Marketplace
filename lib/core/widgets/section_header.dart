@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:localservicemarket/core/theme/app_colors.dart';
+import 'package:localservicemarket/core/theme/theme_extensions.dart';
 
 class SectionHeader extends StatelessWidget {
   const SectionHeader({
@@ -24,9 +24,7 @@ class SectionHeader extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
+              style: context.titleOnSurface,
             ),
           ),
           if (action != null)

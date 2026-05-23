@@ -110,7 +110,7 @@ class _ProviderDashboardPageState extends State<ProviderDashboardPage> {
                               : Icons.event_busy_rounded,
                           color: s.isAvailable
                               ? AppColors.success
-                              : AppColors.textMuted,
+                              : Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                         const SizedBox(width: 12),
                         Text(

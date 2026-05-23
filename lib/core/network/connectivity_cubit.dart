@@ -71,6 +71,7 @@ class ConnectivityCubit extends Cubit<ConnectivityState> {
   }
 }
 
+/// True for API mapping to [NetworkException] (timeouts, unreachable host, etc.).
 bool isNetworkDioError(DioException e) {
   return e.type == DioExceptionType.connectionError ||
       e.type == DioExceptionType.connectionTimeout ||
@@ -79,4 +80,16 @@ bool isNetworkDioError(DioException e) {
       (e.type == DioExceptionType.unknown &&
           (e.message?.toLowerCase().contains('socket') == true ||
               e.message?.toLowerCase().contains('network') == true));
+}
+
+/// Only true when the phone likely has no internet — not slow servers.
+bool isDeviceOfflineError(DioException e) {
+  if (e.type == DioExceptionType.connectionError) return true;
+  if (e.type == DioExceptionType.unknown) {
+    final msg = e.message?.toLowerCase() ?? '';
+    return msg.contains('failed host lookup') ||
+        msg.contains('network is unreachable') ||
+        msg.contains('no address associated');
+  }
+  return false;
 }

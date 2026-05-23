@@ -141,7 +141,11 @@ class _LiveTrackingCard extends StatelessWidget {
                     width: 28,
                     height: 28,
                     decoration: BoxDecoration(
-                      color: done ? AppColors.success : AppColors.background,
+                      color: done
+                          ? AppColors.success
+                          : Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest,
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: done ? AppColors.success : AppColors.border,
@@ -150,7 +154,9 @@ class _LiveTrackingCard extends StatelessWidget {
                     child: Icon(
                       done ? Icons.check_rounded : Icons.circle,
                       size: 16,
-                      color: done ? Colors.white : AppColors.textMuted,
+                      color: done
+                          ? Colors.white
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -159,8 +165,8 @@ class _LiveTrackingCard extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: done ? FontWeight.w600 : FontWeight.w500,
                       color: done
-                          ? AppColors.textPrimary
-                          : AppColors.textMuted,
+                          ? Theme.of(context).colorScheme.onSurface
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -193,7 +199,7 @@ class _BookingTile extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: AppColors.background,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(

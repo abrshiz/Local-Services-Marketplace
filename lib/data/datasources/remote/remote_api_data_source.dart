@@ -21,14 +21,29 @@ class RemoteApiDataSource implements ApiDataSource {
 
   @override
   Future<void> ensureInitialized() async {
-    try {
-      await _dio.get(
-        '/health',
-        options: Options(receiveTimeout: const Duration(seconds: 8)),
-      );
-    } catch (_) {
-      // App can still open; requests will retry when online.
+    Object? lastError;
+    for (var attempt = 0; attempt < 4; attempt++) {
+      try {
+        await _dio.get(
+          '/health',
+          options: Options(
+            connectTimeout: const Duration(seconds: 60),
+            receiveTimeout: const Duration(seconds: 60),
+          ),
+        );
+        return;
+      } catch (e) {
+        lastError = e;
+        if (attempt < 3) {
+          await Future<void>.delayed(Duration(seconds: 2 + attempt * 2));
+        }
+      }
     }
+    assert(() {
+      // ignore: avoid_print
+      print('API health check failed after retries: $lastError');
+      return true;
+    }());
   }
 
   Future<T> _get<T>(String path, {Map<String, dynamic>? query}) async {

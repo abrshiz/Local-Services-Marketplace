@@ -1,1 +1,0 @@
- /home/abrshiz/Desktop/Projects/localservicemarket/.dart_tool/flutter_build/60d1c0fb558d7bfb8512754d72794177/native_assets.json: 

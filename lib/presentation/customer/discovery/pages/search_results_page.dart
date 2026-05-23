@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:localservicemarket/core/theme/app_colors.dart';
+import 'package:localservicemarket/core/theme/theme_extensions.dart';
 import 'package:localservicemarket/core/widgets/app_card.dart';
 import 'package:localservicemarket/core/widgets/empty_state.dart';
 import 'package:localservicemarket/domain/entities/user.dart';
@@ -17,7 +17,7 @@ class SearchResultsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(title: const Text('Search')),
       body: BlocBuilder<DiscoveryCubit, DiscoveryState>(
         builder: (context, state) {
@@ -48,11 +48,12 @@ class SearchResultsPage extends StatelessWidget {
                   child: Row(
                     children: [
                       CircleAvatar(
-                        backgroundColor: AppColors.primaryLight,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.primaryContainer,
                         child: Text(
                           p.name[0],
-                          style: const TextStyle(
-                            color: AppColors.primary,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -64,7 +65,7 @@ class SearchResultsPage extends StatelessWidget {
                           children: [
                             Text(
                               p.name,
-                              style: const TextStyle(fontWeight: FontWeight.w700),
+                              style: context.titleOnSurface,
                             ),
                             StarRating(rating: p.averageRating, size: 14),
                           ],

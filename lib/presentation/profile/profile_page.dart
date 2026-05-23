@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:localservicemarket/core/config/app_config.dart';
 import 'package:localservicemarket/core/theme/app_colors.dart';
 import 'package:localservicemarket/core/theme/theme_cubit.dart';
 import 'package:localservicemarket/core/widgets/app_card.dart';
@@ -105,6 +106,24 @@ class ProfilePage extends StatelessWidget {
               ),
             );
           },
+        ),
+        const SizedBox(height: 16),
+        AppCard(
+          padding: EdgeInsets.zero,
+          child: ListTile(
+            leading: Icon(
+              Icons.cloud_outlined,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            title: const Text('Backend API'),
+            subtitle: Text(
+              AppConfig.useMockApi
+                  ? 'Offline mock (development only)'
+                  : AppConfig.apiBaseUrl,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            dense: true,
+          ),
         ),
         const SizedBox(height: 16),
         _Section(

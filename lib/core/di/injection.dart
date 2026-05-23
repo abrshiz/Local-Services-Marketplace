@@ -74,6 +74,5 @@ Future<void> configureDependencies() async {
   sl.registerFactory(() => ReviewCubit(sl()));
   sl.registerFactory(() => ProviderDashboardCubit(sl(), sl()));
 
-  // Warm API in background — do not block first frame.
-  sl<ApiDataSource>().ensureInitialized().catchError((_) {});
+  await sl<ApiDataSource>().ensureInitialized();
 }

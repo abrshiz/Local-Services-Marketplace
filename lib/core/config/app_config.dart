@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
+
 class AppConfig {
-  /// Production API (Render).
+  /// Production API (Render) — always used on release Android/iOS installs.
   static const productionApiUrl = 'https://localservicemarket-api.onrender.com';
 
-  /// Production builds always use the Render API. Mock is opt-in only.
+  /// Mock is opt-in only: `--dart-define=USE_MOCK_API=true`
   static const useMockApi =
       bool.fromEnvironment('USE_MOCK_API', defaultValue: false);
 
@@ -10,8 +12,13 @@ class AppConfig {
     const fromEnv = String.fromEnvironment('API_BASE_URL');
     if (fromEnv.isNotEmpty) return fromEnv;
 
-    // Default to Render so physical Android/iOS devices work out of the box.
-    // Local dev: flutter run --dart-define=API_BASE_URL=http://10.0.2.2:3000
+    if (useMockApi && !kReleaseMode) {
+      return productionApiUrl; // mock bypasses HTTP; URL unused
+    }
+
     return productionApiUrl;
   }
+
+  static bool get isUsingRenderApi =>
+      !useMockApi && apiBaseUrl == productionApiUrl;
 }

@@ -1,1 +1,0 @@
- /home/abrshiz/Desktop/Projects/localservicemarket/.dart_tool/flutter_build/60d1c0fb558d7bfb8512754d72794177/dart_build_result.json:  /home/abrshiz/Desktop/Projects/localservicemarket/.dart_tool/package_config.json /home/abrshiz/Desktop/Projects/localservicemarket/pubspec.yaml /home/abrshiz/flutter/flutter/bin/cache/dart-sdk/version

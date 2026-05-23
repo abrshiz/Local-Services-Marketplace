@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:localservicemarket/core/di/injection.dart';
 import 'package:localservicemarket/core/theme/app_colors.dart';
+import 'package:localservicemarket/core/theme/theme_extensions.dart';
 import 'package:localservicemarket/core/widgets/app_card.dart';
 import 'package:localservicemarket/core/widgets/star_rating.dart';
 import 'package:localservicemarket/domain/entities/provider_profile.dart';
@@ -267,7 +268,7 @@ class _ProviderDetailPageState extends State<ProviderDetailPage> {
                                 children: [
                                   Text(
                                     r.reviewerName,
-                                    style: const TextStyle(fontWeight: FontWeight.w700),
+                                    style: context.titleOnSurface,
                                   ),
                                   const Spacer(),
                                   StarRating(

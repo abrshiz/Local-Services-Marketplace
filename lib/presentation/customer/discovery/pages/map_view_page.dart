@@ -60,10 +60,10 @@ class MapViewPage extends StatelessWidget {
                         Expanded(
                           child: Text(
                             '${state.providers.length} providers nearby',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textPrimary,
-                            ),
+                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
                           ),
                         ),
                       ],

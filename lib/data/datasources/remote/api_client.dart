@@ -9,8 +9,9 @@ Dio createApiClient(LocalCache cache) {
   final dio = Dio(
     BaseOptions(
       baseUrl: AppConfig.apiBaseUrl,
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 90),
+      // Render free tier can take 50s+ to wake on cold start (especially on mobile).
+      connectTimeout: const Duration(seconds: 60),
+      receiveTimeout: const Duration(seconds: 120),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -28,7 +29,9 @@ Dio createApiClient(LocalCache cache) {
         handler.next(options);
       },
       onError: (error, handler) {
-        if (isNetworkDioError(error)) {
+        // Only show offline UI when the device has no connection — not when
+        // Render is slow or waking from sleep (timeouts).
+        if (isDeviceOfflineError(error)) {
           if (GetIt.I.isRegistered<ConnectivityCubit>()) {
             GetIt.I<ConnectivityCubit>().reportNetworkFailure();
           }

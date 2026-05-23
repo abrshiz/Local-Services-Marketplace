@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localservicemarket/core/theme/app_colors.dart';
+import 'package:localservicemarket/core/theme/theme_extensions.dart';
 import 'package:localservicemarket/core/widgets/app_card.dart';
 import 'package:localservicemarket/core/widgets/star_rating.dart';
 import 'package:localservicemarket/presentation/customer/discovery/pages/provider_detail_page.dart';
@@ -95,7 +96,7 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
         }
 
         return RefreshIndicator(
-          color: AppColors.primary,
+          color: scheme.primary,
           onRefresh: () => context.read<DiscoveryCubit>().load(),
           child: CustomScrollView(
             slivers: [
@@ -104,18 +105,6 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                   padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
                   child: SearchBar(
                     hintText: 'Search services or providers…',
-                    hintStyle: WidgetStatePropertyAll(
-                      TextStyle(color: AppColors.textMuted),
-                    ),
-                    backgroundColor:
-                        WidgetStatePropertyAll(AppColors.surface),
-                    elevation: WidgetStatePropertyAll(0),
-                    shape: WidgetStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        side: const BorderSide(color: AppColors.border),
-                      ),
-                    ),
                     onSubmitted: (q) {
                       context.read<DiscoveryCubit>().setQuery(q);
                       Navigator.push(
@@ -128,9 +117,9 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                         ),
                       );
                     },
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.search_rounded,
-                      color: AppColors.textMuted,
+                      color: scheme.onSurfaceVariant,
                     ),
                     trailing: [
                       IconButton(
@@ -164,7 +153,7 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                       final accent = _accentFor(i);
                       return AppCard(
                         padding: const EdgeInsets.all(14),
-                        color: selected ? AppColors.primaryLight : null,
+                        color: selected ? scheme.primaryContainer : null,
                         onTap: () => context.read<DiscoveryCubit>().setCategory(
                               selected ? null : cat.categoryId,
                             ),
@@ -182,10 +171,7 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                             const Spacer(),
                             Text(
                               cat.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 15,
-                              ),
+                              style: context.titleOnSurface.copyWith(fontSize: 15),
                             ),
                             Text(
                               cat.description,
@@ -262,11 +248,11 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                           children: [
                             CircleAvatar(
                               radius: 28,
-                              backgroundColor: AppColors.primaryLight,
+                              backgroundColor: scheme.primaryContainer,
                               child: Text(
                                 provider.name[0].toUpperCase(),
-                                style: const TextStyle(
-                                  color: AppColors.primary,
+                                style: TextStyle(
+                                  color: scheme.primary,
                                   fontWeight: FontWeight.w700,
                                   fontSize: 18,
                                 ),
@@ -282,8 +268,7 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                                       Expanded(
                                         child: Text(
                                           provider.name,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w700,
+                                          style: context.titleOnSurface.copyWith(
                                             fontSize: 16,
                                           ),
                                         ),
@@ -325,14 +310,14 @@ class _DiscoveryHomePageState extends State<DiscoveryHomePage> {
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.background,
+                                  color: scheme.surfaceContainerHighest,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
                                   '\$${price.toStringAsFixed(0)}',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.w700,
-                                    color: AppColors.primary,
+                                    color: scheme.primary,
                                   ),
                                 ),
                               ),

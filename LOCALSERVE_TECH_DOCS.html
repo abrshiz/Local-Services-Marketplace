@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalServe — Technical Documentation Suite</title>
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* =========================================================================
+       CORE STYLING & VARIABLES
+       ========================================================================= */
+    :root {
+      --primary: #1e3a8a;
+      --primary-light: #3b82f6;
+      --primary-dark: #172554;
+      --accent: #6366f1;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --border: #e2e8f0;
+      --code-bg: #0f172a;
+      --code-text: #f8fafc;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* =========================================================================
+       LAYOUT STRUCTURE
+       ========================================================================= */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Executive Header */
+    header {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      color: white;
+      padding: 5rem 0 4rem 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      border-bottom: 4px solid var(--primary-light);
+    }
+
+    header::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .brand-logo {
+      font-family: 'Outfit', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, #ffffff, #93c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-subtitle {
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: #93c5fd;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(4px);
+    }
+
+    /* Document Structure */
+    main {
+      padding: 3rem 0;
+    }
+
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 3rem;
+    }
+
+    /* Sidebar Navigation */
+    aside {
+      position: sticky;
+      top: 2rem;
+      height: fit-content;
+      max-height: calc(100vh - 4rem);
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    aside::-webkit-scrollbar {
+      width: 4px;
+    }
+    aside::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    .nav-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .nav-menu {
+      list-style: none;
+    }
+
+    .nav-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-link {
+      display: block;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-link:hover {
+      background-color: var(--bg);
+      color: var(--primary-light);
+      padding-left: 0.75rem;
+    }
+
+    .nav-link.active {
+      background-color: #eff6ff;
+      color: var(--primary-light);
+      font-weight: 600;
+    }
+
+    /* Document Core Body */
+    .content-body {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 3rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    /* =========================================================================
+       TYPOGRAPHY & CONTENT ELEMENT STYLING
+       ========================================================================= */
+    h1, h2, h3, h4 {
+      font-family: 'Outfit', sans-serif;
+      color: var(--primary-dark);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      margin-bottom: 2rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 3px solid var(--primary-light);
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      margin-top: 3rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.35rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+
+    h4 {
+      font-size: 1.1rem;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: var(--text-muted);
+    }
+
+    ul, ol {
+      margin-bottom: 1.5rem;
+      margin-left: 1.5rem;
+      color: var(--text-muted);
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    /* Callout Boxes */
+    .note-box {
+      background-color: #f0fdf4;
+      border-left: 5px solid var(--success);
+      padding: 1.25rem 1.5rem;
+      border-radius: 0 8px 8px 0;
+      margin: 2rem 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .note-box-title {
+      font-weight: 700;
+      color: #14532d;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Beautiful Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      box-shadow: var(--shadow-sm);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    th {
+      background-color: var(--primary-dark);
+      color: white;
+      text-align: left;
+      font-weight: 600;
+      padding: 1rem 1.25rem;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+
+    tr:hover td {
+      background-color: #f1f5f9;
+    }
+
+    /* Code Blocks */
+    pre {
+      background-color: var(--code-bg);
+      color: var(--code-text);
+      padding: 1.5rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    code {
+      font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+      font-size: 0.9rem;
+    }
+
+    :not(pre) > code {
+      background-color: #e2e8f0;
+      color: #0f172a;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    /* Terminal Prompt Symbol */
+    .bash-command::before {
+      content: "$ ";
+      color: var(--primary-light);
+      font-weight: bold;
+    }
+
+    /* ERD and Architecture Graphics (SVG & Mermaid Simulator) */
+    .diagram-container {
+      background-color: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .diagram-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      color: #94a3b8;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .diagram-box {
+      width: 100%;
+      max-width: 650px;
+    }
+
+    /* Role Badges */
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge-primary { background-color: #eff6ff; color: var(--primary-light); }
+    .badge-success { background-color: #ecfdf5; color: var(--success); }
+
+    /* Footer */
+    footer {
+      background-color: var(--primary-dark);
+      color: #94a3b8;
+      text-align: center;
+      padding: 3rem 0;
+      margin-top: 5rem;
+      font-size: 0.9rem;
+      border-top: 4px solid var(--primary-light);
+    }
+
+    footer p {
+      color: #94a3b8;
+    }
+
+    /* Print Document Options Floating Button */
+    .print-button {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      box-shadow: var(--shadow-lg);
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      z-index: 1000;
+    }
+
+    .print-button:hover {
+      background: var(--primary-light);
+      transform: translateY(-2px);
+    }
+
+    /* =========================================================================
+       PRINT STYLESHEET (OPTIMIZED FOR PDF GENERATION)
+       ========================================================================= */
+    @media print {
+      body {
+        background-color: #fff;
+        color: #000;
+        font-size: 12pt;
+      }
+
+      .container {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+      }
+
+      aside, .print-button {
+        display: none !important;
+      }
+
+      .grid-layout {
+        display: block;
+      }
+
+      .content-body {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        border-radius: 0;
+      }
+
+      header {
+        background: transparent !important;
+        color: #000 !important;
+        border-bottom: 2px solid #000;
+        padding: 2cm 0;
+        page-break-after: always;
+      }
+
+      .brand-logo {
+        -webkit-text-fill-color: initial !important;
+        color: #000 !important;
+        font-size: 36pt;
+      }
+
+      .header-subtitle {
+        color: #000 !important;
+        font-size: 18pt;
+      }
+
+      .meta-badge {
+        border: 1px solid #000 !important;
+        color: #000 !important;
+      }
+
+      h1, h2, h3, h4 {
+        color: #000 !important;
+        page-break-inside: avoid;
+      }
+
+      h2 {
+        page-break-before: always;
+        border-bottom: 1px solid #000;
+      }
+
+      table {
+        page-break-inside: avoid;
+        border: 1px solid #000;
+      }
+
+      th {
+        background-color: #f1f5f9 !important;
+        color: #000 !important;
+        border-bottom: 2px solid #000;
+      }
+
+      td {
+        border-bottom: 1px solid #000;
+      }
+
+      pre {
+        background-color: #f8fafc !important;
+        color: #0f172a !important;
+        border: 1px solid #000 !important;
+        page-break-inside: avoid;
+      }
+
+      code {
+        color: #000 !important;
+      }
+
+      .diagram-container {
+        background-color: #fff !important;
+        border: 1px solid #000 !important;
+        page-break-inside: avoid;
+      }
+
+      .diagram-title {
+        color: #000 !important;
+      }
+
+      .diagram-box svg {
+        filter: invert(100%);
+      }
+
+      .note-box {
+        border: 1px solid #000 !important;
+        border-left: 6px solid #000 !important;
+        background: #fff !important;
+        page-break-inside: avoid;
+      }
+
+      .note-box-title {
+        color: #000 !important;
+      }
+
+      footer {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Print Trigger -->
+  <button class="print-button" onclick="window.print()">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.844l1.24 12.426a1.2 1.2 0 001.196 1.08h9.688a1.2 1.2 0 001.196-1.08l1.24-12.426M6.72 13.844A12.052 12.052 0 0012 15c1.865 0 3.633-.424 5.28-1.156m-10.56 0A17.972 17.972 0 013 12c0-2.31 1.265-4.323 3.12-5.424m10.56 0A17.972 17.972 0 0121 12c0 2.31-1.265 4.323-3.12 5.424M12 3a9 9 0 00-6.12 2.424M12 3a9 9 0 016.12 2.424M12 3v12"></path>
+    </svg>
+    Save to PDF / Print
+  </button>
+
+  <!-- Title Cover Page -->
+  <header>
+    <div class="container">
+      <div class="brand-logo">LocalServe</div>
+      <div class="header-subtitle">Local Services Marketplace</div>
+      <div class="meta-badge">
+        <span>System Technical Documentation Suite</span>
+        <span>•</span>
+        <span>Version 1.0.0</span>
+      </div>
+      <p style="color: #93c5fd; margin-top: 1.5rem; font-weight: 500;">
+        Prepared for: Academic Instructor Review & Development Team Reference
+      </p>
+    </div>
+  </header>
+
+  <!-- Core Content Body -->
+  <main class="container">
+    <div class="grid-layout">
+      
+      <!-- Side Menu -->
+      <aside>
+        <div class="nav-title">Sections</div>
+        <ul class="nav-menu">
+          <li class="nav-item"><a href="#srs" class="nav-link">1. Software Requirements</a></li>
+          <li class="nav-item"><a href="#schema" class="nav-link">2. MySQL Database Schema</a></li>
+          <li class="nav-item"><a href="#architecture" class="nav-link">3. Backend Architecture</a></li>
+          <li class="nav-item"><a href="#api" class="nav-link">4. REST API Specifications</a></li>
+          <li class="nav-item"><a href="#flutter" class="nav-link">5. Flutter Client Design</a></li>
+          <li class="nav-item"><a href="#deployment" class="nav-link">6. Installation & Deployment</a></li>
+          <li class="nav-item"><a href="#testing" class="nav-link">7. Testing Protocol</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main Docs Paper -->
+      <div class="content-body">
+        
+        <!-- SECTION 1: SRS -->
+        <section id="srs">
+          <h1>1. Software Requirements Specification (SRS)</h1>
+          <p>The LocalServe system supports two primary authenticated user roles. Session authentication is implemented via JSON Web Tokens (JWT) stored client-side.</p>
+          
+          <h3>1.1 Platform Roles & Permissions</h3>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 20%;">Role</th>
+                <th style="width: 30%;">Core Purpose</th>
+                <th style="width: 50%;">Functional Capabilities & Permissions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Customer</strong></td>
+                <td>End-users seeking professional home and local services.</td>
+                <td>
+                  <ul>
+                    <li>Browse categories and dynamically search for nearby providers.</li>
+                    <li>Filter providers by rating, service category, price, and distance.</li>
+                    <li>Create bookings and select preferred available date/time slots.</li>
+                    <li>Track booking lifecycles in real-time.</li>
+                    <li>Engage in private messaging with service providers.</li>
+                    <li>Submit ratings and reviews for completed services.</li>
+                    <li>Manage multiple saved addresses and card/cash payments.</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Service Provider</strong></td>
+                <td>Professionals offering on-demand services.</td>
+                <td>
+                  <ul>
+                    <li>Register, create profiles, and select specific work categories.</li>
+                    <li>Define service titles, detailed descriptions, and base prices.</li>
+                    <li>Manage operational availability status and time slots.</li>
+                    <li>Accept, decline, and monitor customer booking requests.</li>
+                    <li>Access an earnings overview and scheduled tasks dashboard.</li>
+                    <li>Engage in real-time chat with clients concerning active orders.</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>1.2 Visual Interface & Feature Mapping</h3>
+          <p>Based on the official <strong>LocalServe user interface mockups</strong>, the mobile client implements five high-fidelity feature interfaces:</p>
+          <ul>
+            <li><strong>Authentication & Onboarding Screen (<code>sign_up_login_screen</code>)</strong>: Form fields for both login and registration. Role selections (Customer vs. Provider) dynamically toggle fields like professional category selections.</li>
+            <li><strong>Customer Discovery & Home Screen (<code>home_screen</code>)</strong>: Displays location headers parsed from GPS sensors, category dynamic filters, and listings of local professionals with active badges (available in green, busy in orange).</li>
+            <li><strong>Booking Details & Flow Screen (<code>booking_screen</code>)</strong>: Integrates custom scheduling calendars (powered by <code>table_calendar</code>) with slot management, custom instructions, and pricing totals.</li>
+            <li><strong>Real-time Messaging Screen (<code>messages_screen</code> / <code>chat_screen</code>)</strong>: Visual list of active conversations, dynamic unread badge counts, and double-check read/receive indicators.</li>
+            <li><strong>Profile Settings & Availability Console (<code>profile_screen</code>)</strong>: A settings hub displaying user statistics and (for providers) the availability switches, category setups, and schedule panels.</li>
+          </ul>
+        </section>
+
+        <!-- SECTION 2: SCHEMA -->
+        <section id="schema">
+          <h2>2. Database Schema & Architecture (MySQL)</h2>
+          <p>The LocalServe database relies on an optimized, highly structured relational layout built on **MySQL (v8.0+)**. The official database is named **`Local Market Place`**. Primary keys are dynamically handled via standard UUID strings. Foreign key constraints are strictly enforced using the transaction-safe **InnoDB** storage engine, and high performance is guaranteed via indexed lookup trees.</p>
+          
+          <h3>2.1 Relational Layout Structure</h3>
+          <p>The entity relation mappings decouple the core structures, linking <strong>Users</strong> to nested addresses, skills, scheduling time slots, bookings, payments, and private chat registers.</p>
+
+          <div class="diagram-container">
+            <div class="diagram-title">System Relational Model Mapping</div>
+            <!-- Beautiful Clean SVG representing Relational Mapping -->
+            <svg viewBox="0 0 800 400" width="100%" height="auto" class="diagram-box">
+              <rect x="20" y="20" width="140" height="90" rx="8" fill="#1e3a8a" stroke="#3b82f6" stroke-width="2" />
+              <text x="90" y="60" fill="white" font-family="Outfit" font-size="14" font-weight="bold" text-anchor="middle">USERS</text>
+              <text x="30" y="80" fill="#93c5fd" font-family="sans-serif" font-size="10">user_id (PK)</text>
+              <text x="30" y="95" fill="#93c5fd" font-family="sans-serif" font-size="10">role, email</text>
+
+              <rect x="220" y="20" width="140" height="90" rx="8" fill="#1e3a8a" stroke="#3b82f6" stroke-width="2" />
+              <text x="290" y="60" fill="white" font-family="Outfit" font-size="14" font-weight="bold" text-anchor="middle">SERVICES</text>
+              <text x="230" y="80" fill="#93c5fd" font-family="sans-serif" font-size="10">service_id (PK)</text>
+              <text x="230" y="95" fill="#93c5fd" font-family="sans-serif" font-size="10">provider_id (FK)</text>
+
+              <rect x="420" y="20" width="140" height="90" rx="8" fill="#1e3a8a" stroke="#3b82f6" stroke-width="2" />
+              <text x="490" y="60" fill="white" font-family="Outfit" font-size="14" font-weight="bold" text-anchor="middle">TIME_SLOTS</text>
+              <text x="430" y="80" fill="#93c5fd" font-family="sans-serif" font-size="10">slot_id (PK)</text>
+              <text x="430" y="95" fill="#93c5fd" font-family="sans-serif" font-size="10">provider_id (FK)</text>
+
+              <rect x="220" y="200" width="140" height="90" rx="8" fill="#0f172a" stroke="#10b981" stroke-width="2" />
+              <text x="290" y="235" fill="white" font-family="Outfit" font-size="14" font-weight="bold" text-anchor="middle">BOOKINGS</text>
+              <text x="230" y="255" fill="#a7f3d0" font-family="sans-serif" font-size="10">booking_id (PK)</text>
+              <text x="230" y="270" fill="#a7f3d0" font-family="sans-serif" font-size="10">customer_id (FK)</text>
+              <text x="230" y="282" fill="#a7f3d0" font-family="sans-serif" font-size="10">provider_id (FK)</text>
+
+              <rect x="420" y="200" width="140" height="90" rx="8" fill="#1e3a8a" stroke="#3b82f6" stroke-width="2" />
+              <text x="490" y="240" fill="white" font-family="Outfit" font-size="14" font-weight="bold" text-anchor="middle">PAYMENTS</text>
+              <text x="430" y="260" fill="#93c5fd" font-family="sans-serif" font-size="10">payment_id (PK)</text>
+              <text x="430" y="275" fill="#93c5fd" font-family="sans-serif" font-size="10">booking_id (FK)</text>
+
+              <rect x="20" y="200" width="140" height="90" rx="8" fill="#1e3a8a" stroke="#3b82f6" stroke-width="2" />
+              <text x="90" y="240" fill="white" font-family="Outfit" font-size="14" font-weight="bold" text-anchor="middle">MESSAGES</text>
+              <text x="30" y="260" fill="#93c5fd" font-family="sans-serif" font-size="10">message_id (PK)</text>
+              <text x="30" y="275" fill="#93c5fd" font-family="sans-serif" font-size="10">conversation_id</text>
+
+              <!-- Connecting Paths -->
+              <path d="M 160 65 L 220 65" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="4" />
+              <path d="M 360 65 L 420 65" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="4" />
+              <path d="M 90 110 L 90 200" fill="none" stroke="#64748b" stroke-width="2" />
+              <path d="M 290 110 L 290 200" fill="none" stroke="#10b981" stroke-width="2" />
+              <path d="M 490 110 L 360 220" fill="none" stroke="#10b981" stroke-width="2" />
+              <path d="M 360 245 Z L 420 245" fill="none" stroke="#64748b" stroke-width="2" />
+            </svg>
+          </div>
+
+          <h3>2.2 Production MySQL DDL Script</h3>
+          <p>The database schema is declared using standard MySQL DDL. It initializes the <strong>`Local Market Place`</strong> namespace and sets up 12 relational tables:</p>
+          <pre><code><span style="color: #64748b;">-- Create and activate the master team database</span>
+<span style="color: #6366f1;">CREATE DATABASE IF NOT EXISTS</span> `Local Market Place`;
+<span style="color: #6366f1;">USE</span> `Local Market Place`;
+
+<span style="color: #6366f1;">CREATE TABLE IF NOT EXISTS</span> users (
+  user_id <span style="color: #3b82f6;">VARCHAR(36)</span> PRIMARY KEY,
+  name <span style="color: #3b82f6;">VARCHAR(255)</span> NOT NULL,
+  email <span style="color: #3b82f6;">VARCHAR(255)</span> NOT NULL UNIQUE,
+  password_hash <span style="color: #3b82f6;">VARCHAR(255)</span> NOT NULL,
+  phone <span style="color: #3b82f6;">VARCHAR(50)</span>,
+  role <span style="color: #3b82f6;">VARCHAR(50)</span> NOT NULL,
+  created_at <span style="color: #3b82f6;">DATETIME</span> NOT NULL,
+  updated_at <span style="color: #3b82f6;">DATETIME</span> NOT NULL,
+  bio <span style="color: #3b82f6;">TEXT</span>,
+  average_rating <span style="color: #3b82f6;">DECIMAL(3, 2)</span> DEFAULT 0.00,
+  is_verified <span style="color: #3b82f6;">TINYINT(1)</span> DEFAULT 0,
+  is_active <span style="color: #3b82f6;">TINYINT(1)</span> DEFAULT 1,
+  latitude <span style="color: #3b82f6;">DECIMAL(10, 8)</span>,
+  longitude <span style="color: #3b82f6;">DECIMAL(11, 8)</span>,
+  default_address_id <span style="color: #3b82f6;">VARCHAR(36)</span>,
+  loyalty_points <span style="color: #3b82f6;">INT</span> DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+<span style="color: #6366f1;">CREATE TABLE IF NOT EXISTS</span> addresses (
+  address_id <span style="color: #3b82f6;">VARCHAR(36)</span> PRIMARY KEY,
+  user_id <span style="color: #3b82f6;">VARCHAR(36)</span> NOT NULL,
+  label <span style="color: #3b82f6;">VARCHAR(100)</span>,
+  street <span style="color: #3b82f6;">VARCHAR(255)</span>,
+  city <span style="color: #3b82f6;">VARCHAR(100)</span>,
+  state <span style="color: #3b82f6;">VARCHAR(100)</span>,
+  country <span style="color: #3b82f6;">VARCHAR(100)</span>,
+  postal_code <span style="color: #3b82f6;">VARCHAR(20)</span>,
+  latitude <span style="color: #3b82f6;">DECIMAL(10, 8)</span>,
+  longitude <span style="color: #3b82f6;">DECIMAL(11, 8)</span>,
+  is_default <span style="color: #3b82f6;">TINYINT(1)</span> DEFAULT 0,
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+<span style="color: #6366f1;">CREATE TABLE IF NOT EXISTS</span> services (
+  service_id <span style="color: #3b82f6;">VARCHAR(36)</span> PRIMARY KEY,
+  provider_id <span style="color: #3b82f6;">VARCHAR(36)</span> NOT NULL,
+  category_id <span style="color: #3b82f6;">VARCHAR(36)</span> NOT NULL,
+  title <span style="color: #3b82f6;">VARCHAR(255)</span> NOT NULL,
+  description <span style="color: #3b82f6;">TEXT</span>,
+  price_type <span style="color: #3b82f6;">VARCHAR(50)</span> NOT NULL,
+  base_price <span style="color: #3b82f6;">DECIMAL(10, 2)</span> NOT NULL,
+  is_active <span style="color: #3b82f6;">TINYINT(1)</span> DEFAULT 1,
+  FOREIGN KEY (provider_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+<span style="color: #6366f1;">CREATE TABLE IF NOT EXISTS</span> bookings (
+  booking_id <span style="color: #3b82f6;">VARCHAR(36)</span> PRIMARY KEY,
+  customer_id <span style="color: #3b82f6;">VARCHAR(36)</span> NOT NULL,
+  provider_id <span style="color: #3b82f6;">VARCHAR(36)</span> NOT NULL,
+  service_id <span style="color: #3b82f6;">VARCHAR(36)</span> NOT NULL,
+  slot_id <span style="color: #3b82f6;">VARCHAR(36)</span>,
+  scheduled_time <span style="color: #3b82f6;">DATETIME</span> NOT NULL,
+  end_time <span style="color: #3b82f6;">DATETIME</span> NOT NULL,
+  status <span style="color: #3b82f6;">VARCHAR(50)</span> NOT NULL,
+  total_price <span style="color: #3b82f6;">DECIMAL(10, 2)</span> NOT NULL,
+  address_id <span style="color: #3b82f6;">VARCHAR(36)</span>,
+  notes <span style="color: #3b82f6;">TEXT</span>,
+  service_started_at <span style="color: #3b82f6;">DATETIME</span>,
+  service_completed_at <span style="color: #3b82f6;">DATETIME</span>,
+  FOREIGN KEY (customer_id) REFERENCES users(user_id) ON DELETE RESTRICT,
+  FOREIGN KEY (provider_id) REFERENCES users(user_id) ON DELETE RESTRICT,
+  FOREIGN KEY (service_id) REFERENCES services(service_id) ON DELETE RESTRICT,
+  FOREIGN KEY (slot_id) REFERENCES time_slots(slot_id) ON DELETE SET NULL,
+  FOREIGN KEY (address_id) REFERENCES addresses(address_id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;</code></pre>
+        </section>
+
+        <!-- SECTION 3: ARCHITECTURE -->
+        <section id="architecture">
+          <h2>3. System Architecture & Backend Design</h2>
+          <p>The Express backend application adopts a standard, clean multi-tier structure to decouple logical tasks.</p>
+          
+          <h3>3.1 Backend Architectural Layers</h3>
+          <ul>
+            <li><strong>Routing & Core App (<code>src/index.js</code>)</strong>: Starts the server, coordinates endpoints, registers routing structures, and parses JSON input streams.</li>
+            <li><strong>Security & Authentication Middleware (<code>src/middleware/auth.js</code>)</strong>: Intercepts secure HTTP requests. Ensures the <code>Authorization: Bearer &lt;token&gt;</code> header is present and decodes the JWT payload, extracting the <code>userId</code> for use in downstream controllers.</li>
+            <li><strong>Data Mappers (<code>src/userMapper.js</code>)</strong>: Resolves MySQL query structures into nested, standardized JSON models matching the exact entities defined in the Flutter application.</li>
+            <li><strong>Database Pool Driver (<code>src/db.js</code>)</strong>: Interacts directly with the MySQL Server using connection pools provided by the high-performance <code>mysql2</code> package.</li>
+          </ul>
+
+          <h3>3.2 Security Protocols</h3>
+          <div class="note-box">
+            <div class="note-box-title">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+              </svg>
+              Cryptographic Cryptography & Hashing
+            </div>
+            <p>Passwords are stored using <strong>bcryptjs</strong> with 10 salt rounds. Sessions are verified via cryptographically signed JWT strings passed in standard request headers, preventing SQL injection and cross-tenant data leaks.</p>
+          </div>
+        </section>
+
+        <!-- SECTION 4: REST API -->
+        <section id="api">
+          <h2>4. REST API Specifications</h2>
+          <p>All HTTP endpoints require JSON payloads and return descriptive envelopes.</p>
+          
+          <h3>4.1 REST API Endpoint Directory</h3>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 15%;">Method</th>
+                <th style="width: 40%;">Endpoint Route</th>
+                <th style="width: 15%;">Auth</th>
+                <th style="width: 30%;">Functional Scope</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="badge badge-success">POST</span></td>
+                <td><code>/api/v1/auth/login</code></td>
+                <td>No</td>
+                <td>Authenticates credentials; yields token & profile.</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-success">POST</span></td>
+                <td><code>/api/v1/auth/register</code></td>
+                <td>No</td>
+                <td>Creates user; yields active token.</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-primary">GET</span></td>
+                <td><code>/api/v1/providers/nearby</code></td>
+                <td>Yes</td>
+                <td>Locates nearby providers sorted by GPS distance.</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-success">POST</span></td>
+                <td><code>/api/v1/bookings</code></td>
+                <td>Yes</td>
+                <td>Creates a new booking on an open time slot.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>4.2 Key Payloads</h3>
+          <h4>User Authentication Response (Success: 200 OK)</h4>
+          <pre><code>{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "userId": "usr_customer_1",
+    "name": "Alex Customer",
+    "email": "customer@demo.com",
+    "phone": "+15551234",
+    "role": "CUSTOMER",
+    "averageRating": 0,
+    "isVerified": 0,
+    "isActive": 1
+  }
+}</code></pre>
+        </section>
+
+        <!-- SECTION 5: FLUTTER -->
+        <section id="flutter">
+          <h2>5. Flutter Client Architecture</h2>
+          <p>The mobile front-end application is built with <strong>Flutter (Dart)</strong>, utilizing <strong>Clean Architecture</strong> patterns combined with <strong>BLoC</strong> for reliable state isolation and UI management.</p>
+          
+          <h3>5.1 Three-Layer Architectural Decoupling</h3>
+          <ul>
+            <li><strong>Presentation Layer (<code>lib/presentation/</code>)</strong>: Declarative widget hierarchies responding to dynamic states emitted by feature BLoC files.</li>
+            <li><strong>Domain Layer (<code>lib/domain/</code>)</strong>: Houses pure Dart entities and abstract repository definitions, making the business logic highly testable and independent of any networking library.</li>
+            <li><strong>Data Layer (<code>lib/data/</code>)</strong>: Manages API communication using a global <strong>Dio</strong> client and local persistent storage.</li>
+          </ul>
+
+          <h3>5.2 Front-end Core Dependencies</h3>
+          <ul>
+            <li><code>flutter_bloc</code>: Emitted states handle load spinners, network success, and error alerts globally.</li>
+            <li><code>get_it</code>: Resolves repository instances synchronously without boilerplate parameters.</li>
+            <li><code>dio</code>: High-performance HTTP client supporting global logging interceptors and automatic timeout defaults.</li>
+          </ul>
+        </section>
+
+        <!-- SECTION 6: DEPLOYMENT -->
+        <section id="deployment">
+          <h2>6. Installation & Deployment Guide</h2>
+          <p>Follow these steps to launch the LocalServe backend and Flutter mobile applications locally.</p>
+          
+          <h3>6.1 Quick-Start Commands</h3>
+          <h4>1. Node.js Backend setup</h4>
+          <p>Requires Node.js (v18+) and an active MySQL Server (v8.0+).</p>
+          <pre><code class="bash-command">cd backend
+<span class="bash-command">npm install</span>
+<span class="bash-command">npm run seed</span>      <span style="color: #64748b;"># Seeds master database Local Market Place</span>
+<span class="bash-command">npm run dev</span>       <span style="color: #64748b;"># Launches http://localhost:3000</span></code></pre>
+
+          <p>Database connection details are defined in <code>backend/.env</code>:</p>
+          <pre><code>DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=yourpassword
+DB_NAME=Local Market Place</code></pre>
+
+          <h4>2. Flutter Client setup</h4>
+          <pre><code class="bash-command">flutter pub get
+<span class="bash-command">flutter run</span></code></pre>
+
+          <h3>6.2 Build Environment Scenarios</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Scenario</th>
+                <th>Run Flag / Command</th>
+                <th>Functional Scope</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Emulator Setup</strong></td>
+                <td><code>flutter run --dart-define=API_BASE_URL=http://10.0.2.2:3000</code></td>
+                <td>Routes client calls to the local development machine from inside Android virtual devices.</td>
+              </tr>
+              <tr>
+                <td><strong>Offline Mock</strong></td>
+                <td><code>flutter run --dart-define=USE_MOCK_API=true</code></td>
+                <td>Bypasses the internet connection and launches using mock datasets.</td>
+              </tr>
+              <tr>
+                <td><strong>Release Build</strong></td>
+                <td><code>flutter build apk --release</code></td>
+                <td>Assembles the production-ready Android package.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- SECTION 7: TESTING -->
+        <section id="testing">
+          <h2>7. Testing & Verification Protocol</h2>
+          <p>To run functional tests and verify role-based flows, use the pre-seeded credentials below:</p>
+
+          <h3>7.1 Pre-seeded Demo Accounts</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Testing Role</th>
+                <th>Username / Email</th>
+                <th>Password</th>
+                <th>Intended Test Flow Scope</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Customer</strong></td>
+                <td><code>customer@demo.com</code></td>
+                <td><code>password123</code></td>
+                <td>Test the search, booking creation, card payment simulation, chat, and review submission flows.</td>
+              </tr>
+              <tr>
+                <td><strong>Provider A</strong></td>
+                <td><code>provider1@demo.com</code></td>
+                <td><code>password123</code></td>
+                <td>Log in as **Jordan Clean Co.** to manage bookings, adjust pricing, toggle availability, and reply to chat.</td>
+              </tr>
+              <tr>
+                <td><strong>Provider B</strong></td>
+                <td><code>provider2@demo.com</code></td>
+                <td><code>password123</code></td>
+                <td>Log in as secondary provider **Alex Provider** to check scheduling, isolation, and message routing.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="note-box">
+            <div class="note-box-title">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Final Verification Checklist
+            </div>
+            <p>1. Sanity Check MySQL Server is active and `Local Market Place` database is created.<br>
+            2. Run `npm run seed` to verify all 12 tables are initialized and seeded.<br>
+            3. Ensure Maps key in `AndroidManifest.xml` is restricted to `com.localservicemarket.localservicemarket` in Google Console.</p>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 LocalServe. Prepared for Instructor Review & Team Pair Programming.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scrolling to hash locations
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetEl = document.querySelector(targetId);
+        
+        if (targetEl) {
+          window.scrollTo({
+            top: targetEl.offsetTop - 30,
+            behavior: 'smooth'
+          });
+          
+          // Toggle active class in menu
+          document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+          this.classList.add('active');
+        }
+      });
+    });
+
+    // Update active nav link on scroll
+    window.addEventListener('scroll', () => {
+      const scrollPos = window.scrollY + 100;
+      document.querySelectorAll('section').forEach(section => {
+        if (scrollPos >= section.offsetTop && scrollPos < (section.offsetTop + section.offsetHeight)) {
+          const id = '#' + section.getAttribute('id');
+          document.querySelectorAll('.nav-link').forEach(link => {
+            if (link.getAttribute('href') === id) {
+              link.classList.add('active');
+            } else {
+              link.classList.remove('active');
+            }
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

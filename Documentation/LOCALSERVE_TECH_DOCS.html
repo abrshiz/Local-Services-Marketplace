@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LocalServe — Technical Documentation Suite</title>
-  
+
   <!-- Premium Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;800&display=swap"
+    rel="stylesheet">
+
   <style>
     /* =========================================================================
        CORE STYLING & VARIABLES
@@ -72,7 +75,10 @@
     header::before {
       content: "";
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%);
       pointer-events: none;
     }
@@ -138,6 +144,7 @@
     aside::-webkit-scrollbar {
       width: 4px;
     }
+
     aside::-webkit-scrollbar-thumb {
       background: var(--border);
       border-radius: 4px;
@@ -198,7 +205,10 @@
     /* =========================================================================
        TYPOGRAPHY & CONTENT ELEMENT STYLING
        ========================================================================= */
-    h1, h2, h3, h4 {
+    h1,
+    h2,
+    h3,
+    h4 {
       font-family: 'Outfit', sans-serif;
       color: var(--primary-dark);
       font-weight: 700;
@@ -242,7 +252,8 @@
       color: var(--text-muted);
     }
 
-    ul, ol {
+    ul,
+    ol {
       margin-bottom: 1.5rem;
       margin-left: 1.5rem;
       color: var(--text-muted);
@@ -326,7 +337,7 @@
       font-size: 0.9rem;
     }
 
-    :not(pre) > code {
+    :not(pre)>code {
       background-color: #e2e8f0;
       color: #0f172a;
       padding: 0.2rem 0.4rem;
@@ -379,8 +390,15 @@
       text-transform: uppercase;
     }
 
-    .badge-primary { background-color: #eff6ff; color: var(--primary-light); }
-    .badge-success { background-color: #ecfdf5; color: var(--success); }
+    .badge-primary {
+      background-color: #eff6ff;
+      color: var(--primary-light);
+    }
+
+    .badge-success {
+      background-color: #ecfdf5;
+      color: var(--success);
+    }
 
     /* Footer */
     footer {
@@ -440,7 +458,8 @@
         margin: 0;
       }
 
-      aside, .print-button {
+      aside,
+      .print-button {
         display: none !important;
       }
 
@@ -479,7 +498,10 @@
         color: #000 !important;
       }
 
-      h1, h2, h3, h4 {
+      h1,
+      h2,
+      h3,
+      h4 {
         color: #000 !important;
         page-break-inside: avoid;
       }
@@ -546,12 +568,16 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- Floating Print Trigger -->
   <button class="print-button" onclick="window.print()">
-    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.844l1.24 12.426a1.2 1.2 0 001.196 1.08h9.688a1.2 1.2 0 001.196-1.08l1.24-12.426M6.72 13.844A12.052 12.052 0 0012 15c1.865 0 3.633-.424 5.28-1.156m-10.56 0A17.972 17.972 0 013 12c0-2.31 1.265-4.323 3.12-5.424m10.56 0A17.972 17.972 0 0121 12c0 2.31-1.265 4.323-3.12 5.424M12 3a9 9 0 00-6.12 2.424M12 3a9 9 0 016.12 2.424M12 3v12"></path>
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M6.72 13.844l1.24 12.426a1.2 1.2 0 001.196 1.08h9.688a1.2 1.2 0 001.196-1.08l1.24-12.426M6.72 13.844A12.052 12.052 0 0012 15c1.865 0 3.633-.424 5.28-1.156m-10.56 0A17.972 17.972 0 013 12c0-2.31 1.265-4.323 3.12-5.424m10.56 0A17.972 17.972 0 0121 12c0 2.31-1.265 4.323-3.12 5.424M12 3a9 9 0 00-6.12 2.424M12 3a9 9 0 016.12 2.424M12 3v12">
+      </path>
     </svg>
     Save to PDF / Print
   </button>
@@ -575,7 +601,7 @@
   <!-- Core Content Body -->
   <main class="container">
     <div class="grid-layout">
-      
+
       <!-- Side Menu -->
       <aside>
         <div class="nav-title">Sections</div>
@@ -592,19 +618,25 @@
 
       <!-- Main Docs Paper -->
       <div class="content-body">
-        
+
         <!-- Project Metadata & Team Block -->
-        <div style="background-color: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 2rem; margin-bottom: 3rem; box-shadow: var(--shadow-sm);">
-          <h2 style="margin-top: 0; font-size: 1.4rem; color: var(--primary); padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 0.5rem;">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+        <div
+          style="background-color: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 2rem; margin-bottom: 3rem; box-shadow: var(--shadow-sm);">
+          <h2
+            style="margin-top: 0; font-size: 1.4rem; color: var(--primary); padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 0.5rem;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+              </path>
             </svg>
             Project Metadata & Development Team
           </h2>
           <p style="margin-bottom: 1.5rem; font-weight: 500; color: var(--text);">
-            <strong>Repository Link:</strong> 
-            <a href="https://github.com/abrshiz/Local-Services-Marketplace" target="_blank" style="color: var(--primary-light); font-family: 'JetBrains Mono', monospace; text-decoration: none; font-size: 0.95rem; border-bottom: 1px dashed var(--primary-light);">
-              git@github.com:abrshiz/Local-Services-Marketplace.git
+            <strong>Repository Link:</strong>
+            <a href="https://github.com/abrshiz/Local-Services-Marketplace" target="_blank"
+              style="color: var(--primary-light); font-family: 'JetBrains Mono', monospace; text-decoration: none; font-size: 0.95rem; border-bottom: 1px dashed var(--primary-light);">
+              https://github.com/abrshiz/Local-Services-Marketplace
             </a>
           </p>
           <table style="margin: 0; box-shadow: none; border-radius: 6px;">
@@ -612,7 +644,7 @@
               <tr>
                 <th style="padding: 0.6rem 1rem; font-size: 0.85rem; width: 10%;">#</th>
                 <th style="padding: 0.6rem 1rem; font-size: 0.85rem; width: 55%;">Group Member Name</th>
-                <th style="padding: 0.6rem 1rem; font-size: 0.85rem; width: 35%;">Student ID / ID</th>
+                <th style="padding: 0.6rem 1rem; font-size: 0.85rem; width: 35%;">Student ID</th>
               </tr>
             </thead>
             <tbody>
@@ -644,12 +676,13 @@
             </tbody>
           </table>
         </div>
-        
+
         <!-- SECTION 1: SRS -->
         <section id="srs">
           <h1>1. Software Requirements Specification (SRS)</h1>
-          <p>The LocalServe system supports two primary authenticated user roles. Session authentication is implemented via JSON Web Tokens (JWT) stored client-side.</p>
-          
+          <p>The LocalServe system supports two primary authenticated user roles. Session authentication is implemented
+            via JSON Web Tokens (JWT) stored client-side.</p>
+
           <h3>1.1 Platform Roles & Permissions</h3>
           <table>
             <thead>
@@ -693,56 +726,77 @@
           </table>
 
           <h3>1.2 Visual Interface & Feature Mapping</h3>
-          <p>Based on the official <strong>LocalServe user interface mockups</strong>, the mobile client implements five high-fidelity feature interfaces:</p>
+          <p>Based on the official <strong>LocalServe user interface mockups</strong>, the mobile client implements five
+            high-fidelity feature interfaces:</p>
           <ul>
-            <li><strong>Authentication & Onboarding Screen (<code>sign_up_login_screen</code>)</strong>: Form fields for both login and registration. Role selections (Customer vs. Provider) dynamically toggle fields like professional category selections.</li>
-            <li><strong>Customer Discovery & Home Screen (<code>home_screen</code>)</strong>: Displays location headers parsed from GPS sensors, category dynamic filters, and listings of local professionals with active badges (available in green, busy in orange).</li>
-            <li><strong>Booking Details & Flow Screen (<code>booking_screen</code>)</strong>: Integrates custom scheduling calendars (powered by <code>table_calendar</code>) with slot management, custom instructions, and pricing totals.</li>
-            <li><strong>Real-time Messaging Screen (<code>messages_screen</code> / <code>chat_screen</code>)</strong>: Visual list of active conversations, dynamic unread badge counts, and double-check read/receive indicators.</li>
-            <li><strong>Profile Settings & Availability Console (<code>profile_screen</code>)</strong>: A settings hub displaying user statistics and (for providers) the availability switches, category setups, and schedule panels.</li>
+            <li><strong>Authentication & Onboarding Screen (<code>sign_up_login_screen</code>)</strong>: Form fields for
+              both login and registration. Role selections (Customer vs. Provider) dynamically toggle fields like
+              professional category selections.</li>
+            <li><strong>Customer Discovery & Home Screen (<code>home_screen</code>)</strong>: Displays location headers
+              parsed from GPS sensors, category dynamic filters, and listings of local professionals with active badges
+              (available in green, busy in orange).</li>
+            <li><strong>Booking Details & Flow Screen (<code>booking_screen</code>)</strong>: Integrates custom
+              scheduling calendars (powered by <code>table_calendar</code>) with slot management, custom instructions,
+              and pricing totals.</li>
+            <li><strong>Real-time Messaging Screen (<code>messages_screen</code> / <code>chat_screen</code>)</strong>:
+              Visual list of active conversations, dynamic unread badge counts, and double-check read/receive
+              indicators.</li>
+            <li><strong>Profile Settings & Availability Console (<code>profile_screen</code>)</strong>: A settings hub
+              displaying user statistics and (for providers) the availability switches, category setups, and schedule
+              panels.</li>
           </ul>
         </section>
 
         <!-- SECTION 2: SCHEMA -->
         <section id="schema">
           <h2>2. Database Schema & Architecture (MySQL)</h2>
-          <p>The LocalServe database relies on an optimized, highly structured relational layout built on **MySQL (v8.0+)**. The official database is named **`Local Market Place`**. Primary keys are dynamically handled via standard UUID strings. Foreign key constraints are strictly enforced using the transaction-safe **InnoDB** storage engine, and high performance is guaranteed via indexed lookup trees.</p>
-          
+          <p>The LocalServe database relies on an optimized, highly structured relational layout built on **MySQL
+            (v8.0+)**. The official database is named **`Local Market Place`**. Primary keys are dynamically handled via
+            standard UUID strings. Foreign key constraints are strictly enforced using the transaction-safe **InnoDB**
+            storage engine, and high performance is guaranteed via indexed lookup trees.</p>
+
           <h3>2.1 Relational Layout Structure</h3>
-          <p>The entity relation mappings decouple the core structures, linking <strong>Users</strong> to nested addresses, skills, scheduling time slots, bookings, payments, and private chat registers.</p>
+          <p>The entity relation mappings decouple the core structures, linking <strong>Users</strong> to nested
+            addresses, skills, scheduling time slots, bookings, payments, and private chat registers.</p>
 
           <div class="diagram-container">
             <div class="diagram-title">System Relational Model Mapping</div>
             <!-- Beautiful Clean SVG representing Relational Mapping -->
             <svg viewBox="0 0 800 400" width="100%" height="auto" class="diagram-box">
               <rect x="20" y="20" width="140" height="90" rx="8" fill="#1e3a8a" stroke="#3b82f6" stroke-width="2" />
-              <text x="90" y="60" fill="white" font-family="Outfit" font-size="14" font-weight="bold" text-anchor="middle">USERS</text>
+              <text x="90" y="60" fill="white" font-family="Outfit" font-size="14" font-weight="bold"
+                text-anchor="middle">USERS</text>
               <text x="30" y="80" fill="#93c5fd" font-family="sans-serif" font-size="10">user_id (PK)</text>
               <text x="30" y="95" fill="#93c5fd" font-family="sans-serif" font-size="10">role, email</text>
 
               <rect x="220" y="20" width="140" height="90" rx="8" fill="#1e3a8a" stroke="#3b82f6" stroke-width="2" />
-              <text x="290" y="60" fill="white" font-family="Outfit" font-size="14" font-weight="bold" text-anchor="middle">SERVICES</text>
+              <text x="290" y="60" fill="white" font-family="Outfit" font-size="14" font-weight="bold"
+                text-anchor="middle">SERVICES</text>
               <text x="230" y="80" fill="#93c5fd" font-family="sans-serif" font-size="10">service_id (PK)</text>
               <text x="230" y="95" fill="#93c5fd" font-family="sans-serif" font-size="10">provider_id (FK)</text>
 
               <rect x="420" y="20" width="140" height="90" rx="8" fill="#1e3a8a" stroke="#3b82f6" stroke-width="2" />
-              <text x="490" y="60" fill="white" font-family="Outfit" font-size="14" font-weight="bold" text-anchor="middle">TIME_SLOTS</text>
+              <text x="490" y="60" fill="white" font-family="Outfit" font-size="14" font-weight="bold"
+                text-anchor="middle">TIME_SLOTS</text>
               <text x="430" y="80" fill="#93c5fd" font-family="sans-serif" font-size="10">slot_id (PK)</text>
               <text x="430" y="95" fill="#93c5fd" font-family="sans-serif" font-size="10">provider_id (FK)</text>
 
               <rect x="220" y="200" width="140" height="90" rx="8" fill="#0f172a" stroke="#10b981" stroke-width="2" />
-              <text x="290" y="235" fill="white" font-family="Outfit" font-size="14" font-weight="bold" text-anchor="middle">BOOKINGS</text>
+              <text x="290" y="235" fill="white" font-family="Outfit" font-size="14" font-weight="bold"
+                text-anchor="middle">BOOKINGS</text>
               <text x="230" y="255" fill="#a7f3d0" font-family="sans-serif" font-size="10">booking_id (PK)</text>
               <text x="230" y="270" fill="#a7f3d0" font-family="sans-serif" font-size="10">customer_id (FK)</text>
               <text x="230" y="282" fill="#a7f3d0" font-family="sans-serif" font-size="10">provider_id (FK)</text>
 
               <rect x="420" y="200" width="140" height="90" rx="8" fill="#1e3a8a" stroke="#3b82f6" stroke-width="2" />
-              <text x="490" y="240" fill="white" font-family="Outfit" font-size="14" font-weight="bold" text-anchor="middle">PAYMENTS</text>
+              <text x="490" y="240" fill="white" font-family="Outfit" font-size="14" font-weight="bold"
+                text-anchor="middle">PAYMENTS</text>
               <text x="430" y="260" fill="#93c5fd" font-family="sans-serif" font-size="10">payment_id (PK)</text>
               <text x="430" y="275" fill="#93c5fd" font-family="sans-serif" font-size="10">booking_id (FK)</text>
 
               <rect x="20" y="200" width="140" height="90" rx="8" fill="#1e3a8a" stroke="#3b82f6" stroke-width="2" />
-              <text x="90" y="240" fill="white" font-family="Outfit" font-size="14" font-weight="bold" text-anchor="middle">MESSAGES</text>
+              <text x="90" y="240" fill="white" font-family="Outfit" font-size="14" font-weight="bold"
+                text-anchor="middle">MESSAGES</text>
               <text x="30" y="260" fill="#93c5fd" font-family="sans-serif" font-size="10">message_id (PK)</text>
               <text x="30" y="275" fill="#93c5fd" font-family="sans-serif" font-size="10">conversation_id</text>
 
@@ -757,7 +811,8 @@
           </div>
 
           <h3>2.2 Production MySQL DDL Script</h3>
-          <p>The database schema is declared using standard MySQL DDL. It initializes the <strong>`Local Market Place`</strong> namespace and sets up 12 relational tables:</p>
+          <p>The database schema is declared using standard MySQL DDL. It initializes the <strong>`Local Market
+              Place`</strong> namespace and sets up 12 relational tables:</p>
           <pre><code><span style="color: #64748b;">-- Create and activate the master team database</span>
 <span style="color: #6366f1;">CREATE DATABASE IF NOT EXISTS</span> `Local Market Place`;
 <span style="color: #6366f1;">USE</span> `Local Market Place`;
@@ -834,25 +889,36 @@
         <!-- SECTION 3: ARCHITECTURE -->
         <section id="architecture">
           <h2>3. System Architecture & Backend Design</h2>
-          <p>The Express backend application adopts a standard, clean multi-tier structure to decouple logical tasks.</p>
-          
+          <p>The Express backend application adopts a standard, clean multi-tier structure to decouple logical tasks.
+          </p>
+
           <h3>3.1 Backend Architectural Layers</h3>
           <ul>
-            <li><strong>Routing & Core App (<code>src/index.js</code>)</strong>: Starts the server, coordinates endpoints, registers routing structures, and parses JSON input streams.</li>
-            <li><strong>Security & Authentication Middleware (<code>src/middleware/auth.js</code>)</strong>: Intercepts secure HTTP requests. Ensures the <code>Authorization: Bearer &lt;token&gt;</code> header is present and decodes the JWT payload, extracting the <code>userId</code> for use in downstream controllers.</li>
-            <li><strong>Data Mappers (<code>src/userMapper.js</code>)</strong>: Resolves MySQL query structures into nested, standardized JSON models matching the exact entities defined in the Flutter application.</li>
-            <li><strong>Database Pool Driver (<code>src/db.js</code>)</strong>: Interacts directly with the MySQL Server using connection pools provided by the high-performance <code>mysql2</code> package.</li>
+            <li><strong>Routing & Core App (<code>src/index.js</code>)</strong>: Starts the server, coordinates
+              endpoints, registers routing structures, and parses JSON input streams.</li>
+            <li><strong>Security & Authentication Middleware (<code>src/middleware/auth.js</code>)</strong>: Intercepts
+              secure HTTP requests. Ensures the <code>Authorization: Bearer &lt;token&gt;</code> header is present and
+              decodes the JWT payload, extracting the <code>userId</code> for use in downstream controllers.</li>
+            <li><strong>Data Mappers (<code>src/userMapper.js</code>)</strong>: Resolves MySQL query structures into
+              nested, standardized JSON models matching the exact entities defined in the Flutter application.</li>
+            <li><strong>Database Pool Driver (<code>src/db.js</code>)</strong>: Interacts directly with the MySQL Server
+              using connection pools provided by the high-performance <code>mysql2</code> package.</li>
           </ul>
 
           <h3>3.2 Security Protocols</h3>
           <div class="note-box">
             <div class="note-box-title">
-              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                </path>
               </svg>
               Cryptographic Cryptography & Hashing
             </div>
-            <p>Passwords are stored using <strong>bcryptjs</strong> with 10 salt rounds. Sessions are verified via cryptographically signed JWT strings passed in standard request headers, preventing SQL injection and cross-tenant data leaks.</p>
+            <p>Passwords are stored using <strong>bcryptjs</strong> with 10 salt rounds. Sessions are verified via
+              cryptographically signed JWT strings passed in standard request headers, preventing SQL injection and
+              cross-tenant data leaks.</p>
           </div>
         </section>
 
@@ -860,7 +926,7 @@
         <section id="api">
           <h2>4. REST API Specifications</h2>
           <p>All HTTP endpoints require JSON payloads and return descriptive envelopes.</p>
-          
+
           <h3>4.1 REST API Endpoint Directory</h3>
           <table>
             <thead>
@@ -919,20 +985,29 @@
         <!-- SECTION 5: FLUTTER -->
         <section id="flutter">
           <h2>5. Flutter Client Architecture</h2>
-          <p>The mobile front-end application is built with <strong>Flutter (Dart)</strong>, utilizing <strong>Clean Architecture</strong> patterns combined with <strong>BLoC</strong> for reliable state isolation and UI management.</p>
-          
+          <p>The mobile front-end application is built with <strong>Flutter (Dart)</strong>, utilizing <strong>Clean
+              Architecture</strong> patterns combined with <strong>BLoC</strong> for reliable state isolation and UI
+            management.</p>
+
           <h3>5.1 Three-Layer Architectural Decoupling</h3>
           <ul>
-            <li><strong>Presentation Layer (<code>lib/presentation/</code>)</strong>: Declarative widget hierarchies responding to dynamic states emitted by feature BLoC files.</li>
-            <li><strong>Domain Layer (<code>lib/domain/</code>)</strong>: Houses pure Dart entities and abstract repository definitions, making the business logic highly testable and independent of any networking library.</li>
-            <li><strong>Data Layer (<code>lib/data/</code>)</strong>: Manages API communication using a global <strong>Dio</strong> client and local persistent storage.</li>
+            <li><strong>Presentation Layer (<code>lib/presentation/</code>)</strong>: Declarative widget hierarchies
+              responding to dynamic states emitted by feature BLoC files.</li>
+            <li><strong>Domain Layer (<code>lib/domain/</code>)</strong>: Houses pure Dart entities and abstract
+              repository definitions, making the business logic highly testable and independent of any networking
+              library.</li>
+            <li><strong>Data Layer (<code>lib/data/</code>)</strong>: Manages API communication using a global
+              <strong>Dio</strong> client and local persistent storage.
+            </li>
           </ul>
 
           <h3>5.2 Front-end Core Dependencies</h3>
           <ul>
-            <li><code>flutter_bloc</code>: Emitted states handle load spinners, network success, and error alerts globally.</li>
+            <li><code>flutter_bloc</code>: Emitted states handle load spinners, network success, and error alerts
+              globally.</li>
             <li><code>get_it</code>: Resolves repository instances synchronously without boilerplate parameters.</li>
-            <li><code>dio</code>: High-performance HTTP client supporting global logging interceptors and automatic timeout defaults.</li>
+            <li><code>dio</code>: High-performance HTTP client supporting global logging interceptors and automatic
+              timeout defaults.</li>
           </ul>
         </section>
 
@@ -940,7 +1015,7 @@
         <section id="deployment">
           <h2>6. Installation & Deployment Guide</h2>
           <p>Follow these steps to launch the LocalServe backend and Flutter mobile applications locally.</p>
-          
+
           <h3>6.1 Quick-Start Commands</h3>
           <h4>1. Node.js Backend setup</h4>
           <p>Requires Node.js (v18+) and an active MySQL Server (v8.0+).</p>
@@ -1015,27 +1090,32 @@ DB_NAME=Local Market Place</code></pre>
                 <td><strong>Provider A</strong></td>
                 <td><code>provider1@demo.com</code></td>
                 <td><code>password123</code></td>
-                <td>Log in as **Jordan Clean Co.** to manage bookings, adjust pricing, toggle availability, and reply to chat.</td>
+                <td>Log in as **Jordan Clean Co.** to manage bookings, adjust pricing, toggle availability, and reply to
+                  chat.</td>
               </tr>
               <tr>
                 <td><strong>Provider B</strong></td>
                 <td><code>provider2@demo.com</code></td>
                 <td><code>password123</code></td>
-                <td>Log in as secondary provider **Alex Provider** to check scheduling, isolation, and message routing.</td>
+                <td>Log in as secondary provider **Alex Provider** to check scheduling, isolation, and message routing.
+                </td>
               </tr>
             </tbody>
           </table>
 
           <div class="note-box">
             <div class="note-box-title">
-              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z">
+                </path>
               </svg>
               Final Verification Checklist
             </div>
             <p>1. Sanity Check MySQL Server is active and `Local Market Place` database is created.<br>
-            2. Run `npm run seed` to verify all 12 tables are initialized and seeded.<br>
-            3. Ensure Maps key in `AndroidManifest.xml` is restricted to `com.localservicemarket.localservicemarket` in Google Console.</p>
+              2. Run `npm run seed` to verify all 12 tables are initialized and seeded.<br>
+              3. Ensure Maps key in `AndroidManifest.xml` is restricted to `com.localservicemarket.localservicemarket`
+              in Google Console.</p>
           </div>
         </section>
 
@@ -1052,17 +1132,17 @@ DB_NAME=Local Market Place</code></pre>
   <script>
     // Smooth scrolling to hash locations
     document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', function(e) {
+      link.addEventListener('click', function (e) {
         e.preventDefault();
         const targetId = this.getAttribute('href');
         const targetEl = document.querySelector(targetId);
-        
+
         if (targetEl) {
           window.scrollTo({
             top: targetEl.offsetTop - 30,
             behavior: 'smooth'
           });
-          
+
           // Toggle active class in menu
           document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
           this.classList.add('active');
@@ -1088,4 +1168,5 @@ DB_NAME=Local Market Place</code></pre>
     });
   </script>
 </body>
+
 </html>

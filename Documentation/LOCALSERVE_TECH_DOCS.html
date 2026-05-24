@@ -443,6 +443,54 @@
     }
 
     /* =========================================================================
+       RESPONSIVE DESIGN (MOBILE / TABLET)
+       ========================================================================= */
+    @media (max-width: 768px) {
+      .grid-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      aside {
+        position: static;
+        max-height: none;
+        margin-bottom: 2rem;
+      }
+
+      .content-body {
+        padding: 1.5rem;
+      }
+
+      header {
+        padding: 3rem 0 2rem 0;
+      }
+
+      .brand-logo {
+        font-size: 2.5rem;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .print-button {
+        bottom: 1rem;
+        right: 1rem;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+
+    /* =========================================================================
        PRINT STYLESHEET (OPTIMIZED FOR PDF GENERATION)
        ========================================================================= */
     @media print {
